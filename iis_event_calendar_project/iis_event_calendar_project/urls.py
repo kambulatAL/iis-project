@@ -17,6 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-urlpatterns = [
+from iis_event_calendar_project.iis_event_calendar_project import settings
+from django.conf.urls.static import static
+
+url_patterns = [
     path('admin/', admin.site.urls),
 ]
+
+# add
+if settings.DEBUG:
+    url_patterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
