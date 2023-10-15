@@ -1,6 +1,10 @@
 from django.db import models
+from django import forms
 
-# Create your models here.
+# TODO: Если что, название этих моделей в Датабазе начинается с events_ 
+# TODO: то есть, есть модель Worker, а в базе она называется events_worker
+# TODO: это немного не удобно, но я не знаю, как это исправить
+
 # represents "Registrovany uzivatel" from the ER diagram
 class RegisteredUser(models.Model):
     login = models.CharField(max_length=100, primary_key=True)
@@ -9,6 +13,9 @@ class RegisteredUser(models.Model):
     password = models.CharField(max_length=100)
     email = models.EmailField(max_length=255)
     phone_number = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.login
 
 
 # represents "Zamestnanec" from the ER diagram
@@ -33,10 +40,10 @@ class EventPlace(models.Model):
     photo = models.ImageField(upload_to=f"Photos/places/{place_id}/%y/%m/%d/", null=True)
     # foreign key represents the "Navrhl" relation from the ERD
     created = models.ForeignKey(RegisteredUser,
-                                on_delete=models.CASCADE)  # how to make creation ???? - in the moment of creation by user?
+                                on_delete=models.CASCADE, related_name='event_place_created')  # how to make creation ???? - in the moment of creation by user?
     # foreign key represents the "Schvalil" relation from the ERD
     accepted = models.ForeignKey(Worker, on_delete=models.CASCADE, null=True,
-                                 blank=True)  # how to make accepting ???? after the moment of creation by user?
+                                 blank=True, related_name='event_place_accepted')  # how to make accepting ???? after the moment of creation by user?
 
 
 # represents "Udalost" from the ER diagram
@@ -52,27 +59,25 @@ class Event(models.Model):
     photo = models.ImageField(upload_to=f"Photos/events/{event_id}/%y/%m/%d/")
 
     # foreign key represents the "Kona se" relation from the ERD
-    event_place = models.ForeignKey(EventPlace, on_delete=models.SET_NULL, null=True, blank=True)
+    event_place = models.ForeignKey(EventPlace, on_delete=models.SET_NULL, null=True, blank=True, related_name='event_event_place')
 
     # foreign key represents the "zalozil" relation from the ERD
-    created = models.ForeignKey(RegisteredUser,
-                                on_delete=models.CASCADE)  # how to make creation ???? - in the moment of creation by user?
+    created = models.ForeignKey(RegisteredUser, on_delete=models.CASCADE, related_name='event_created')  # how to make creation ???? - in the moment of creation by user?
 
     # foreign key represents the "Schvalil" relation from the ERD
-    accepted = models.ForeignKey(Worker, on_delete=models.CASCADE, null=True,
-                                 blank=True)  # how to make accepting ???? - after the moment of creation by  user?
+    accepted = models.ForeignKey(Worker, on_delete=models.CASCADE, null=True, blank=True, related_name='event_accepted')  # how to make accepting ???? - after the moment of creation by  user?
 
     # Many-to-many represents the "Patri" relation from the ERD
-    category = models.ManyToManyField('Category', on_delete=models.PROTECT)
+    category = models.ManyToManyField('Category')
 
     # Many-to-many represents the "Registrovan" relation from the ERD
-    registered_people = models.ManyToManyField(RegisteredUser, on_delete=models.PROTECT)
+    registered_people = models.ManyToManyField(RegisteredUser)
 
 
 # represents "Kategorie" from the ER diagram
 class Category(models.Model):
     name = models.CharField(max_length=255)
-    subcategory = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True, blank=True)
+    subcategory = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True, blank=True, related_name='category_subcategory')
 
     def __str__(self):
         return self.name
@@ -80,8 +85,8 @@ class Category(models.Model):
 
 # represents "Hodnoceni" from the ER diagram
 class EventEstimation(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    user = models.ForeignKey(RegisteredUser, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='event_estimation_event')
+    user = models.ForeignKey(RegisteredUser, on_delete=models.CASCADE, related_name='event_estimation_user')
     estimation = models.IntegerField(choices=[
         (1, '1'),
         (2, '2'),
@@ -100,8 +105,8 @@ class EventEstimation(models.Model):
 
 # represents "Uhrada vstupneho" from the ER diagram
 class TicketPayment(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    user = models.ForeignKey(RegisteredUser, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='ticket_payment_event')
+    user = models.ForeignKey(RegisteredUser, on_delete=models.CASCADE, related_name='ticket_payment_user')
     creation_date = models.DateField(auto_now_add=True)
     creation_time = models.TimeField(auto_now_add=True)
     ticket_price = models.IntegerField()
