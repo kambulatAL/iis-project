@@ -3,14 +3,10 @@ from django.shortcuts import render
 
 from events.models import *
 
-#TODO: то, что у нас в фигме Settings - тут называется My profile
-# Menu bar
-menu = ["Login", "Sign up", "Events", "My events", "My profile", "Logout"]
-
 # Create your views here.
 def index(request):
     users = RegisteredUser.objects.all()
-    return render(request, "index.html", {"menu": menu, "title": "Home", "users": users})
+    return render(request, "index.html", {"title": "Home", "users": users})
 
 
 def pageNotFound(request, exception):

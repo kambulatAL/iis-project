@@ -4,22 +4,104 @@
     <head>
         <meta charset="UTF-8">
         <title>Calendar</title>
-        <link type="text/css" href="{% static 'css/styles.css' %}"  rel="stylesheet"/>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}" />
 
     </head>
     <body>
-        {% block base_body %}
-        <ul>
-            {%for elements in menu%}
-                <li>
-                    {{elements}}
-                </li>
-            {%endfor%}
-        </ul>
-        {% endblock base_body %}
+        {% block header_block %}
+        <header>
+            <h1 class="logo_header">Calendar</h1>
+            <div class="nav"> 
+                <!-- Тут надо помнить, что не надо все показывать, 
+                    если юзер не зарегался, он видит только логин или sihn up -->
+                <a href="#">My Calendar</a>
+                <a href="#">Settings</a>
+                <a href="#">Login</a>
+                <a href="#">Log Out</a>
+                <a href="#">Sign Up</a>
+            </div>
+        </header>
+        {% endblock header_block %}
+
+        {% block category_block %}
+        <!-- Здесь будет весь контент будущий -->
+        <div class="category">
+            <h3>Category</h3>
+            <div>
+                <ul class="category_list">
+                    <li><a href="#">All categories</a></li>
+                    <li><a href="#">Sport</a></li>
+                    <li><a href="#">Music</a></li>
+                    <li><a href="#">Cinema</a></li>
+                    <li><a href="#">Food</a></li>
+                    <li><a href="#">Programmer meeting</a></li>
+                </ul>
+            </div>
+        </div>
+        {% endblock category_block %}
+
+        {% block content_block %}
+        <div class="events">
+            <h3>Events</h3>
+                <div class="events_element">
+                    <div class="event-photo">
+                        <img src="{% static 'images/mbappe.jpg' %}" alt="Event Photo">
+                    </div>
+
+                    <!-- Здесь пока что костыль, но имеем, что имеем
+                        типо там первый контейнер event-details работает правильно
+                        а вот второй нет, я не помню как это решать.... и не надо вроде решать это, нам главное Бэкэнд делать
+                    -->
+                    <div class="event-details">
+                        <h4>Event: Mbappe auto session</h4>
+                        <p>Date: 01.01.2023</p>
+                        <p>Location: Stadion de el Mbappe</p>
+                        <p>Capacity: 157/350</p>
+                    </div>
+                    <div class="event-details-more">
+                        <p>Cost: 0 eur</p>
+                        <p>Start: 18:00 - 22:00</p>
+                        <p>Category: Sport</p>
+                    </div>
+                    <div class="event-button">
+                        <button>Join</button>
+                    </div>
+                </div>
+                <div class="events_element">
+                    <p>Event 2</p>
+                </div>
+                <div class="events_element">
+                    <p>Event 3</p>
+                </div>
+        </div>
 
 
-        {% block base_content %}
-        {% endblock base_content %}
+        {% endblock content_block %}
+
+
+        <footer>
+            <h2>
+                &copy; Project: Akce a udalosti
+            </h2>
+            <div class="authors-container">
+                <h3>
+                    Authors:
+                </h3>
+                <ul>
+                    <li>
+                        <a href="#">Assatulla Dias (xassat00)</a>
+                    </li>
+                    <li>
+                        <a href="#">Alakaev Kambulat (xalaka00)</a>
+                    </li>
+                    <li>
+                        <a href="#">Zdebska Kateryna (xzdebs00)</a>
+                    </li>
+                </ul>
+            </div>   
+        </footer>
     </body>
 </html>

@@ -49,10 +49,10 @@ class EventPlace(models.Model):
 # represents "Udalost" from the ER diagram
 class Event(models.Model):
     event_id = models.AutoField(primary_key=True)
-    start_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
-    end_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
-    start_time = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time'}))
-    end_time = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time'}))
+    start_date = models.DateField(null=False, default='2021-01-01')
+    end_date = models.DateField(null=True)
+    start_time = models.TimeField(null=False, default='12:30') # А что если ивент будет длится несколько дней? или 24 часа или весь день просто???
+    end_time = models.TimeField(null=True)
     capacity = models.IntegerField()
     ticket_price = models.IntegerField()
     description = models.TextField(null=True)
