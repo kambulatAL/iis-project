@@ -1,1 +1,85 @@
 {%extends 'base.html'%}
+{% load static %}
+
+{% block header_block %}
+    <header>
+        <h1 class="logo_header">Calendar</h1>
+            <div class="nav"> 
+                {% if user.is_authenticated %}
+                    {% if user.is_moderator or user.is_admin %}
+                    <a href="{% url 'admin_page' %}">Admin Panel</a>
+                    {% endif %}
+                    <a href="#">My Calendar</a>
+                    <a href="#">Settings</a>
+                    <a href="{% url 'logout_page' %}">Log Out</a>
+                {% else %}
+                    <a href="{% url 'login_page' %}">Login</a>
+                    <a href="{% url 'register_page' %}">Sign Up</a>
+                {% endif %}
+        </div>
+    </header>
+{% endblock header_block %}
+
+
+{% block category_block %}
+        <!-- Здесь будет весь контент будущий -->
+        {% if user.is_authenticated %}
+            <div class="add_category_button">
+                <a = href="{% url 'new_category_page' %}">Add category</a>
+            </div>
+        {% endif %}
+        <div class="category">
+            <h3>Category</h3>
+            <div>
+                <ul class="category_list">
+                    <li><a href="#">All categories</a></li>
+                    <li><a href="#">Sport</a></li>
+                    <li><a href="#">Music</a></li>
+                    <li><a href="#">Cinema</a></li>
+                    <li><a href="#">Food</a></li>
+                    <li><a href="#">Programmer meeting</a></li>
+                </ul>
+            </div>
+        </div>
+{% endblock category_block %}
+
+{% block content_block %}
+
+        {% if user.is_authenticated %}
+            <div class="add_event_button">
+                <a = href="{% url 'new_event_page' %}">Add event</a>
+            </div>
+        {% endif %}
+        <div class="main_container">
+            <h3>Events</h3>
+                <div class="events_element">
+                    <div class="event-photo">
+                        <img src="{% static 'images/mbappe.jpg' %}" alt="Event Photo">
+                    </div>
+                    <div class="event-details">
+                        <h4>Event: Mbappe auto session</h4>
+                        <p>Date: 01.01.2023</p>
+                        <p>Location: Stadion de el Mbappe</p>
+                        <p>Capacity: 157/350</p>
+                    </div>
+                    <div class="event-details-more">
+                        <p>Cost: 0 eur</p>
+                        <p>Start: 18:00 - 22:00</p>
+                        <p>Category: Sport</p>
+                    </div>
+
+                    <!-- If user is logged in, he can see the buttons -->
+                    {% if user.is_authenticated %}
+                        <div class="event-button">
+                            <button>Join</button>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="events_element">
+                    <p>Event 2</p>
+                </div>
+                <div class="events_element">
+                    <p>Event 3</p>
+                </div>
+        </div>
+{% endblock content_block %}

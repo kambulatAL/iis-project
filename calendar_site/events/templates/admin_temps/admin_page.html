@@ -1,0 +1,43 @@
+{%extends 'base.html'%}
+{% load static %}
+
+
+{% block header_block %}
+    <header>
+        <h1 class="logo_header">Calendar</h1>
+        <div class="nav"> 
+            <a href="{% url 'home_page' %}">Home</a>
+            <a href="#">My Calendar</a>
+            <a href="#">Settings</a>
+            <a href="{% url 'logout_page' %}">Log Out</a>
+        </div>
+    </header>
+{% endblock header_block %}
+
+
+
+{% block content_block %}
+        <div class="main_container admin_container">
+            <div class="admin_navbar">
+                <ul>
+                    <li>
+                        <a href="{% url 'list_places_page' %}">Places</a>
+                    </li>
+                    {% if user.is_admin %}
+                    <li>
+                        <a href="{% url 'list_users_page' %}">Users</a>
+                    </li>
+                    {% endif %}
+                    <li>
+                        <a href="#">Events</a>
+                    </li>
+                    <li>
+                        <a href="#">Categories</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="admin_content">
+                {% block admin_content %} {% endblock admin_content %}
+            </div>
+        </div>
+{% endblock content_block %}

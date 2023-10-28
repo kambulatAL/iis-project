@@ -1,0 +1,38 @@
+{%extends 'base.html'%}
+{% load static %}
+
+{% block header_block %}
+    <header>
+        <h1 class="logo_header">Calendar</h1>
+            <div class="nav"> 
+                <a href="{% url 'home_page' %}">Main Page</a>
+                <a href="{% url 'register_page' %}">Sign Up</a>
+        </div>
+    </header>
+{% endblock header_block %}
+
+
+{% block category_block %}
+{% endblock category_block %}
+
+{% block content_block %}
+<div class="main_container">
+    <h3>Login</h3>
+    <div class="login_form">
+        <form method="POST">
+            {% csrf_token %} 
+            <div class="form_input">
+                <label for="username">Username:</label>
+                <input type="text" name="username" id="username" required>
+            </div>
+            <div class="form_input">
+                <label for="password">Password:</label>
+                <input type="password" name="password" id="password" required>
+            </div>
+            <button class="submit_button" type="submit">Log In</button>
+        </form>
+    </div>
+
+
+</div>
+{% endblock content_block %}

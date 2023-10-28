@@ -1,0 +1,13 @@
+{%extends 'admin_temps/admin_page.html' %}
+{% load static %}
+
+
+{% block admin_content %}
+        <h3>Places</h3>
+            <ul>
+                {% for place in places %}
+                    <li>{{ place.city }}</li>
+                {% endfor %}
+            </ul>
+{% endblock admin_content %}
+```

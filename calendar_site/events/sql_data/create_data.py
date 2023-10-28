@@ -5,47 +5,28 @@ from events.models import RegisteredUser, Worker, Category, EventPlace, Event, E
 # 2. python3 manage.py migrate
 # 3. python3 manage.py shell < create_data.py
 
-"""
-Этот код добавляет 4 юзера, из которых 2 имеют роль админа и модератора
-Также создает 6 категорий и 2 места проведения мероприятий
-А также создает 1 мероприятие
-
-Камбулат реши это, слишком дохуя fields, слишком сложно читается, слишком дохуя всего
-Либо добавь комментарии к моделям и его првкам
-"""
 
 default_pass = 'user_pass'
 
-# Create a user
-user = RegisteredUser(login='user_login', name='user_name', surname='user_surname', \
-                                            password=default_pass, email='user_email', phone_number='user_phone')
-user.save()
+## Create users
+#def create_user(username, name, surname, email, phone_number, is_admin=False, is_moderator=False):
+#    default_password = 'user_pass'
+#    user = RegisteredUser.objects.create_user(username=username, password=default_password)
+#    user.first_name = name
+#    user.last_name = surname
+#    user.email = email
+#    user.save()
+#    if is_admin:
+#        Worker.objects.create(worker=user, role='Admin')
+#    elif is_moderator:
+#        Worker.objects.create(worker=user, role='Moderator')
 
-# Try to create in one line
-RegisteredUser.objects.create(login='xblanco00', name='Marimba', surname='Blanco', \
-                                            password=default_pass, email='blanco@work.gmail', phone_number='blanco_phone')
 
-RegisteredUser.objects.create( # This user will have admin role
-    login='xassat00',
-    name='Dias',
-    surname='Assatulla',
-    password=default_pass,
-    email='xassat@work.gmail',
-    phone_number='+420 777 777 777'
-)
+RegisteredUser.create_user('xblanco00', 'Marimba', 'Blanco', 'blanco@work.gmail', 'blanco_phone')
+RegisteredUser.create_user('xassat00', 'Dias', 'Assatulla', 'xassat@work.gmail', '+420 777 777 777', is_admin=True)
+RegisteredUser.create_user('xapada00', 'Parad', 'Moshi-Moshi', 'xapada@work.gmail', '+420 333 777 777', is_moderator=True)
+RegisteredUser.create_user('user_login', 'user_name', 'user_surname', 'user_email', 'user_phone')
 
-RegisteredUser.objects.create( # This user will have moderator role
-    login='xapada00',
-    name='Parad',
-    surname='Moshi-Moshi',
-    password=default_pass,
-    email='xapada@work.gmail',
-    phone_number='+420 333 777 777'
-)
-
-# Assign roles to users
-Worker.objects.create(worker=RegisteredUser.objects.get(login='xassat00'), role='Admin')
-Worker.objects.create(worker=RegisteredUser.objects.get(login='xapada00'), role='Moderator')
 
 
 # Create default categories
@@ -66,8 +47,8 @@ EventPlace.objects.create(
     description='A nahuya tak mnogo fields v modeli?',
     photo='',
     # Это нам точно надо??????????????????????
-    created=RegisteredUser.objects.get(login='xblanco00'),
-    accepted=Worker.objects.get(worker=RegisteredUser.objects.get(login='xassat00'))
+    created=RegisteredUser.objects.get(username='xblanco00'),
+    accepted=Worker.objects.get(worker=RegisteredUser.objects.get(username='xassat00'))
 )
 
 # Create event places
@@ -80,8 +61,8 @@ EventPlace.objects.create(
     photo='',
 
     # Это нам точно надо??????????????????????
-    created=RegisteredUser.objects.get(login='user_login'),
-    accepted=Worker.objects.get(worker=RegisteredUser.objects.get(login='xassat00'))
+    created=RegisteredUser.objects.get(username='user_login'),
+    accepted=Worker.objects.get(worker=RegisteredUser.objects.get(username='xassat00'))
 )
 
 # Create event
@@ -98,12 +79,12 @@ event1 = Event.objects.create(
     ticket_price=20,
     description="Description of Event 1",
     event_place=EventPlace.objects.get(place_id=1),
-    created=RegisteredUser.objects.get(login='xblanco00'),
-    accepted=Worker.objects.get(worker=RegisteredUser.objects.get(login='xassat00'))
+    created=RegisteredUser.objects.get(username='xblanco00'),
+    accepted=Worker.objects.get(worker=RegisteredUser.objects.get(username='xassat00'))
 )
 
 event1.category.add(Category.objects.get(name='Music'))
 event1.category.add(Category.objects.get(name='Sport'))
 
-event1.registered_people.add(RegisteredUser.objects.get(login='user_login'))
-event1.registered_people.add(RegisteredUser.objects.get(login='xassat00'))
+event1.registered_people.add(RegisteredUser.objects.get(username='user_login'))
+event1.registered_people.add(RegisteredUser.objects.get(username='xassat00'))

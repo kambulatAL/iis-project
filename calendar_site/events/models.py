@@ -1,21 +1,40 @@
 from django.db import models
 from django import forms
+from django.contrib.auth.models import AbstractUser
 
 # TODO: Если что, название этих моделей в Датабазе начинается с events_ 
 # TODO: то есть, есть модель Worker, а в базе она называется events_worker
 # TODO: это немного не удобно, но я не знаю, как это исправить
-
+default_pass = 'user_pass'
 # represents "Registrovany uzivatel" from the ER diagram
-class RegisteredUser(models.Model):
-    login = models.CharField(max_length=100, primary_key=True)
-    name = models.CharField(max_length=255)
-    surname = models.CharField(max_length=255)
+class RegisteredUser(AbstractUser):
+    username = models.CharField(max_length=100, primary_key=True)
+    name = models.CharField(max_length=255) # НЕ ЮЗАЕТСЯ юзается first_name
+    surname = models.CharField(max_length=255) # НЕ ЮЗАЕТСЯ юзается last_name
     password = models.CharField(max_length=100)
     email = models.EmailField(max_length=255)
     phone_number = models.CharField(max_length=20)
 
+    is_moderator = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=False)
+    
+
     def __str__(self):
-        return self.login
+        return self.username
+    
+    def create_user(username, name, surname, email, phone_number, is_admin=False, is_moderator=False, password=default_pass):
+        user = RegisteredUser.objects.create_user(username=username, password=password)
+        user.first_name = name
+        user.last_name = surname
+        user.phone_number = phone_number
+        user.email = email
+        user.is_admin = is_admin
+        user.is_moderator = is_moderator
+        user.save()
+        if is_admin:
+            Worker.objects.create(worker=user, role='Admin')
+        elif is_moderator:
+            Worker.objects.create(worker=user, role='Moderator')
 
 
 # represents "Zamestnanec" from the ER diagram
