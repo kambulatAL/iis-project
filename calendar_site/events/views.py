@@ -6,14 +6,6 @@ from .forms import LoginForm, RegisterForm
 from django.contrib import messages
 
 
-def list_places(request):
-    places = EventPlace.objects.all()
-    return render(request, "admin_temps/list_places.html", {"title": "List of places", "places": places})
-
-def list_users(request):
-    users = RegisteredUser.objects.all()
-    return render(request, "admin_temps/list_users.html", {"title": "List of users", "users": users})
-
 
 ############################################################################################### Admin functions
 
@@ -31,11 +23,19 @@ def delete_user(request, username):
         return redirect("list_users_page")
 
 
+# function that require moderator rights
+def moderator_required(view_func):
+    def _wrapper(request, *args, **kwargs):
+        if request.user.is_authenticated and (request.user.is_admin or request.user.is_moderator):
+            return view_func(request, *args, **kwargs)
+        else:
+            return HttpResponse("You don't have moderator rights")
+    return _wrapper
 
 # function that require admin rights
 def admin_required(view_func):
     def _wrapper(request, *args, **kwargs):
-        if request.user.is_authenticated and (request.user.is_admin or request.user.is_moderator):
+        if request.user.is_authenticated and request.user.is_admin:
             return view_func(request, *args, **kwargs)
         else:
             return HttpResponse("You don't have admin rights")
@@ -55,6 +55,25 @@ def login_required(view_func):
 def index(request):
     return render(request, "index.html", {"title": "Home page"})
 
+
+
+
+def list_places(request):
+    places = EventPlace.objects.all()
+    return render(request, "admin_temps/list_places.html", {"title": "List of places", "places": places})
+
+# Make sure, that user is admin
+@admin_required
+def list_users(request):
+    users = RegisteredUser.objects.all()
+    return render(request, "admin_temps/list_users.html", {"title": "List of users", "users": users})
+
+
+
+
+
+
+
 #######################################################################################
 @login_required
 def create_category(request):
@@ -65,7 +84,7 @@ def create_event(request):
     return HttpResponse("Create event page")
 
 
-@admin_required
+@moderator_required
 def admin_view(request):
     return render(request, "admin_temps/admin_page.html", {"title": "Admin page"})
 
