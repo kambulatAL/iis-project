@@ -64,14 +64,25 @@ class EventPlace(models.Model):
     accepted = models.ForeignKey(Worker, on_delete=models.CASCADE, null=True,
                                  blank=True, related_name='event_place_accepted')  # how to make accepting ???? after the moment of creation by user?
 
+# represents "Kategorie" from the ER diagram
+class Category(models.Model):
+    name = models.CharField(max_length=255)
+    subcategory = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True, blank=True, related_name='category_subcategory')
+
+    def __str__(self):
+        return self.name
+
 
 # represents "Udalost" from the ER diagram
 class Event(models.Model):
+    name = models.CharField(max_length=255, default='Event name')
     event_id = models.AutoField(primary_key=True)
     start_date = models.DateField(null=False, default='2021-01-01')
     end_date = models.DateField(null=True)
+    
     start_time = models.TimeField(null=False, default='12:30') # А что если ивент будет длится несколько дней? или 24 часа или весь день просто???
     end_time = models.TimeField(null=True)
+
     capacity = models.IntegerField()
     ticket_price = models.IntegerField()
     description = models.TextField(null=True)
@@ -84,22 +95,18 @@ class Event(models.Model):
     created = models.ForeignKey(RegisteredUser, on_delete=models.CASCADE, related_name='event_created')  # how to make creation ???? - in the moment of creation by user?
 
     # foreign key represents the "Schvalil" relation from the ERD
+    # this field means accepted by moderator
     accepted = models.ForeignKey(Worker, on_delete=models.CASCADE, null=True, blank=True, related_name='event_accepted')  # how to make accepting ???? - after the moment of creation by  user?
 
     # Many-to-many represents the "Patri" relation from the ERD
-    category = models.ManyToManyField('Category')
+    categories = models.ManyToManyField(Category, related_name='event_category')
 
     # Many-to-many represents the "Registrovan" relation from the ERD
     registered_people = models.ManyToManyField(RegisteredUser)
 
+    approved_by_mods = models.BooleanField(default=False)
 
-# represents "Kategorie" from the ER diagram
-class Category(models.Model):
-    name = models.CharField(max_length=255)
-    subcategory = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True, blank=True, related_name='category_subcategory')
 
-    def __str__(self):
-        return self.name
 
 
 # represents "Hodnoceni" from the ER diagram

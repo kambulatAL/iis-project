@@ -1,4 +1,6 @@
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 from . import views
@@ -27,4 +29,8 @@ urlpatterns += [
     path('admin_page/users/', views.list_users, name='list_users_page'),
     path('admin_page/users/delete_user/<str:username>/', views.delete_user, name='delete_user_page'),
     path('admin_page/places/', views.list_places, name='list_places_page'),
+    path('admin_page/events/', views.list_events, name='list_events_page'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

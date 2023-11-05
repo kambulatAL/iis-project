@@ -30,6 +30,17 @@ header {
     background-color: #272932;
 }
 
+.messages {
+    list-style: none;
+    padding: 10px;
+    width: 70%;
+    display: block;
+    background-color: #86b049;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 20px auto;
+}
+
 .logo_header {
     text-transform: uppercase;
     color: white;
@@ -154,6 +165,70 @@ footer a {
 
 /* END OF CATEGORY STYLES */
 
+/* Create container styles *//* Create container styles *//* Create container styles */
+.create_container h2{
+    
+    margin: 40px auto;
+    text-align: center;
+    font-size: 30px;
+    color: white;
+}
+
+.create_container_fill {
+    background-color: #272932;
+    color: white;
+    width: 70%;
+    margin: 0px auto 40px auto;
+    padding: 30px;
+}
+
+.form_event {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+.form_event button {
+    width: 300px; 
+    margin: auto;   
+}
+
+.form_event label {
+    font-size: 24px;
+    padding: 10px;
+    text-align: center;
+}
+
+.form_event input, select, textarea{
+    margin: auto;
+    border-radius: 5px;
+    width: 500px;
+}
+
+
+.file_input {
+   margin: 20px auto auto auto;
+}
+
+
+.file {
+    display: none;
+}
+
+.file_label {
+    background-color: #333; /* Add a background color */
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    text-align: center;
+}
+
+.file_label:hover {
+    background-color: #ba7e7e; /* Change background color on hover */
+}
+
+/* End Create container styles *//* End Create container styles *//* End Create container styles */
 
 .main_container {
     background-color: #4D7EA8;
@@ -168,7 +243,7 @@ footer a {
     padding: 30px;
 }
 
-/* Admin styles  */
+/* Admin styles  *//* Admin styles  *//* Admin styles  *//* Admin styles  */
 .admin_container {
     width: 70%;
     margin: 100px auto;
@@ -176,8 +251,6 @@ footer a {
     flex-direction: row;
     align-items: center;
 }
-
-
 
 .admin_navbar ul {
     list-style: none; 
@@ -302,7 +375,6 @@ footer a {
 /* EVENTS STYLES */
 
 .events_element {
-    position: relative;
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
@@ -327,7 +399,7 @@ footer a {
 }
 
 .event-details {   
-    flex: 2;
+    flex: 4;
     padding: 20px;
 }
 
@@ -359,10 +431,9 @@ footer a {
 }
 
 .event-button {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    padding: 40px;
+    flex: 1;
+    text-align: end;
+    padding: 15px;
 }
 
 .event-button button {

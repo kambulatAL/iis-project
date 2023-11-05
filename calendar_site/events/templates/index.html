@@ -22,6 +22,14 @@
 
 
 {% block category_block %}
+        <!-- Add messages if something happened-->
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
         <!-- Здесь будет весь контент будущий -->
         {% if user.is_authenticated %}
             <div class="add_category_button">
@@ -52,6 +60,7 @@
         {% endif %}
         <div class="main_container">
             <h3>Events</h3>
+            <!--
                 <div class="events_element">
                     <div class="event-photo">
                         <img src="{% static 'images/mbappe.jpg' %}" alt="Event Photo">
@@ -68,6 +77,36 @@
                         <p>Category: Sport</p>
                     </div>
 
+                   If user is logged in, he can see the buttons 
+                    {% if user.is_authenticated %}
+                        <div class="event-button">
+                            <button>Join</button>
+                        </div>
+                    {% endif %}
+                </div> -->
+                {% for event in events %}
+                <div class="events_element">
+                    {% if event.photo %}
+                    <div class="event-photo">
+                        <img src="{{ event.photo.url }}" alt="Event Photo">
+                    </div>
+                    {% endif %}
+                    <div class="event-details">
+                        <h4>Event: {{ event.name }}</h4>
+                        <p>Date: {{ event.start_date }} - {{ event.end_date }}</p>
+                        <p>Location: {{ event.event_place.city }} - {{event.event_place.street}}</p>
+                        <p>Capacity: {{ event.capacity }}</p>
+                    </div>
+                    <div class="event-details-more">
+                        <p>Cost: {{ event.ticket_price }} eur</p>
+                        <p>Start: {{ event.start_time }} - {{ event.end_time }}</p>
+                        <p>Category: 
+                            {% for category in event.categories.all %}
+                                | {{ category.name }} 
+                            {% endfor %}
+                        </p>
+                    </div>
+
                     <!-- If user is logged in, he can see the buttons -->
                     {% if user.is_authenticated %}
                         <div class="event-button">
@@ -75,11 +114,6 @@
                         </div>
                     {% endif %}
                 </div>
-                <div class="events_element">
-                    <p>Event 2</p>
-                </div>
-                <div class="events_element">
-                    <p>Event 3</p>
-                </div>
+                {% endfor %}
         </div>
 {% endblock content_block %}

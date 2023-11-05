@@ -1,0 +1,26 @@
+{%extends 'admin_temps/admin_page.html' %}
+{% load static %}
+
+
+{% block admin_content %}
+        <h3>Events</h3>
+            <ul>
+                {% for event in events %}
+                <li>
+                    <div class="event-info">
+                        <strong>Event Name:</strong> {{ event.name }}<br>
+                        <strong>Event Description:</strong> {{ event.description }}<br>
+                        <strong>Event Date:</strong> {{ event.start_date }}<br>
+                        <strong>Event Time:</strong> {{ event.start_time }}<br>
+                        <strong>Event Place:</strong> {{ event.event_place.city }}<br>
+
+                        <strong>Event Categories:</strong>
+                            {% for category in event.categories.all %}
+                                 {{ category.name }} | 
+                            {% endfor %}
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+{% endblock admin_content %}
+```

@@ -1,8 +1,8 @@
 from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from events.models import RegisteredUser, EventPlace
-from .forms import LoginForm, RegisterForm
+from events.models import RegisteredUser, EventPlace, Event
+from .forms import LoginForm, RegisterForm, EventForm
 from django.contrib import messages
 
 
@@ -51,9 +51,9 @@ def login_required(view_func):
     return _wrapper
 
 
-# Create your views here.
 def index(request):
-    return render(request, "index.html", {"title": "Home page"})
+    events = Event.objects.all()
+    return render(request, "index.html", {"title": "Home page", "events": events})
 
 
 
@@ -61,6 +61,10 @@ def index(request):
 def list_places(request):
     places = EventPlace.objects.all()
     return render(request, "admin_temps/list_places.html", {"title": "List of places", "places": places})
+
+def list_events(request):
+    events = Event.objects.all()
+    return render(request, "admin_temps/list_events.html", {"title": "List of events", "events": events})
 
 # Make sure, that user is admin
 @admin_required
@@ -81,7 +85,67 @@ def create_category(request):
 
 @login_required
 def create_event(request):
-    return HttpResponse("Create event page")
+    if request.method == 'POST':
+        form = EventForm(request.POST, request.FILES)
+        if form.is_valid():
+            print("Form is valid")
+            name = form.cleaned_data.get("name")
+            start_date = form.cleaned_data.get("start_date")
+            end_date = form.cleaned_data.get("end_date")
+            start_time = form.cleaned_data.get("start_time")
+            end_time = form.cleaned_data.get("end_time")
+            capacity = form.cleaned_data.get("capacity")
+            description = form.cleaned_data.get("description")
+            ticket_price = form.cleaned_data.get("ticket_price")
+            place = form.cleaned_data.get("place")
+            photo = form.cleaned_data.get("photo")
+            ## TODO: need to add checking if place is not None and etc....
+
+            # Create event
+            #print(request.user)
+            #print("Name: " + name)
+            #print("Start date: " + str(start_date))
+            #print("End date: " + str(end_date))
+            #print("Start time: " + str(start_time))
+            #print("End time: " + str(end_time))
+            #print("Capacity: " + str(capacity))
+            #print("Description: " + description)
+            #print("Ticket price: " + str(ticket_price))
+            #print("Place: " + str(place.place_id))
+
+            event = Event(
+                name=name,
+                start_date=start_date,
+                end_date=end_date,
+                start_time=start_time,
+                end_time=end_time,
+                capacity=capacity,
+                description=description,
+                ticket_price=ticket_price,
+                event_place=place,
+                created=request.user
+            )
+            event.save()
+            # TODO: Need to add categories
+            
+            # Add a success message
+            messages.success(request, f"Event {name} has been successfully created.")
+
+            return redirect("home_page")
+        else:
+            print("Form is not valid")
+            print(form.errors)
+    else: 
+        form = EventForm()
+    
+    event_places = EventPlace.objects.all()
+    context = {
+        "title": "Create event page",
+        "event_places": event_places,
+        "form": form
+    }
+
+    return render(request, "create_event.html", context)
 
 
 @moderator_required

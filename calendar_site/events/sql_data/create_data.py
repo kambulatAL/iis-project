@@ -83,8 +83,10 @@ event1 = Event.objects.create(
     accepted=Worker.objects.get(worker=RegisteredUser.objects.get(username='xassat00'))
 )
 
-event1.category.add(Category.objects.get(name='Music'))
-event1.category.add(Category.objects.get(name='Sport'))
+event1.categories.add(Category.objects.get(name='Music'))
+event1.categories.add(Category.objects.get(name='Sport'))
 
 event1.registered_people.add(RegisteredUser.objects.get(username='user_login'))
 event1.registered_people.add(RegisteredUser.objects.get(username='xassat00'))
+
+event1.save()
