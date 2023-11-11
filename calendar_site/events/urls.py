@@ -2,18 +2,16 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 
-
 from . import views
 
 urlpatterns = [
     path('', views.index, name='home_page'),
     path('events/', views.create_event, name='new_event_page'),
-    # Возможно в будущем пригодится Камбулат
-    #path('events/<int:event_id>', views.event_page, name='event_page'),
+    path('events/join_user_event/<int:event_id>/<str:username>/', views.join_user_event, name='event_join_user_page'),
+    path('events/<int:event_id>/', views.show_event_page, name='event_page'),
 
     path('category/', views.create_category, name='new_category_page'),
 ]
-
 
 # user authentication paths
 urlpatterns += [
@@ -21,7 +19,6 @@ urlpatterns += [
     path('register/', views.register_view, name='register_page'),
     path('logged', views.logout_view, name='logout_page')
 ]
-
 
 # admin paths
 urlpatterns += [

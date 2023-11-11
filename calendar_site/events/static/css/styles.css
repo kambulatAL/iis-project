@@ -104,7 +104,7 @@ footer a {
     margin-left: 20px;
 }
 
-.authors-container ul li{
+.authors-container ul li {
     padding-bottom: 10px;
 }
 
@@ -134,7 +134,7 @@ footer a {
     margin: 40px;
     font-size: 20px;
     color: white;
-    
+
 }
 
 .category h3 {
@@ -155,9 +155,9 @@ footer a {
 
 .category_list a {
 
-    text-decoration: none; 
-    color: #fff; 
-    transition: color 0.2s; 
+    text-decoration: none;
+    color: #fff;
+    transition: color 0.2s;
 }
 
 .category_list a:hover {
@@ -168,8 +168,8 @@ footer a {
 /* END OF CATEGORY STYLES */
 
 /* Create container styles *//* Create container styles *//* Create container styles */
-.create_container h2{
-    
+.create_container h2 {
+
     margin: 40px auto;
     text-align: center;
     font-size: 30px;
@@ -189,9 +189,10 @@ footer a {
     flex-direction: column;
     padding: 20px;
 }
+
 .form_class button {
-    width: 300px; 
-    margin: auto;   
+    width: 300px;
+    margin: auto;
 }
 
 .form_class label {
@@ -200,7 +201,7 @@ footer a {
     text-align: center;
 }
 
-.form_class input, select, textarea{
+.form_class input, select, textarea {
     margin: auto;
     border-radius: 5px;
     width: 500px;
@@ -208,7 +209,7 @@ footer a {
 
 
 .file_input {
-   margin: 20px auto auto auto;
+    margin: 20px auto auto auto;
 }
 
 
@@ -240,6 +241,7 @@ footer a {
     font-size: 20px;
     color: white;
 }
+
 .main_container h3 {
     font-size: 30px;
     padding: 30px;
@@ -255,9 +257,9 @@ footer a {
 }
 
 .admin_navbar ul {
-    list-style: none; 
-    padding: 0; 
-    margin: 0; 
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 .admin_navbar li {
@@ -267,7 +269,7 @@ footer a {
 
 .admin_navbar a {
     text-decoration: none;
-    color: #333; 
+    color: #333;
     font-weight: 700;
     padding: 5px;
 }
@@ -278,12 +280,11 @@ footer a {
 }
 
 
-
 .admin_content {
 
     margin: 20px;
     flex: 1;
-    color:#000000;
+    color: #000000;
     text-align: left;
     padding: 10px;
 }
@@ -324,18 +325,18 @@ footer a {
 }
 
 .delete_button:hover {
-    background-color: #f0ab9c; 
+    background-color: #f0ab9c;
     color: black;
 }
 
 .event_aprovals .approved {
-    color:#317b35;
+    color: #317b35;
     font-weight: 700;
     font-size: 17px;
 }
 
 .event_aprovals .rejected {
-    color:#a0190a;
+    color: #a0190a;
     font-weight: 700;
     font-size: 17px;
 }
@@ -343,13 +344,13 @@ footer a {
 
 /* MAIN BUTTON STYLES   */
 .button_approve {
-    background-color: #4CAF50; 
+    background-color: #4CAF50;
     color: white;
-    padding: 10px; 
+    padding: 10px;
     margin: 5px;
-    border: none; 
-    border-radius: 5px; 
-    cursor: pointer; 
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
     transition: background-color 0.3s;
 }
 
@@ -358,14 +359,14 @@ footer a {
 }
 
 .button_reject {
-    background-color: #FF5733; 
-    color: white; 
-    padding: 10px; 
+    background-color: #FF5733;
+    color: white;
+    padding: 10px;
     margin: 5px;
-    border: none; 
-    border-radius: 5px; 
-    cursor: pointer; 
-    transition: background-color 0.3s; 
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
 .button_reject:hover {
@@ -374,16 +375,16 @@ footer a {
 
 .button_more {
     background-color: #5d5d5d;
-    color: white; 
-    padding: 10px; 
-    border: none; 
-    border-radius: 5px; 
-    cursor: pointer; 
-    transition: background-color 0.3s; 
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
 .button_more:hover {
-    background-color: #272932; 
+    background-color: #272932;
 }
 
 /* MAIN BUTTON STYLES END  */
@@ -396,7 +397,7 @@ footer a {
 .button_reject,
 .button_more {
     display: block;
-    margin-bottom: 10px; 
+    margin-bottom: 10px;
 }
 
 /* Button to add event */
@@ -407,7 +408,7 @@ footer a {
     text-align: right;
 }
 
-.add_event_button  a{
+.add_event_button a {
     background-color: #000000;
     color: white;
     border: none;
@@ -420,7 +421,7 @@ footer a {
 }
 
 .add_event_button a:hover {
-    background-color: #e34a29; 
+    background-color: #e34a29;
 }
 
 .add_category_button {
@@ -428,7 +429,7 @@ footer a {
     text-align: left;
 }
 
-.add_category_button a{
+.add_category_button a {
     background-color: #000000;
     color: white;
     border: none;
@@ -441,7 +442,7 @@ footer a {
 }
 
 .add_category_button a:hover {
-    background-color: #e34a29; 
+    background-color: #e34a29;
 }
 
 /* EVENTS STYLES */
@@ -450,7 +451,7 @@ footer a {
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
-    
+
     margin: 10px;
     padding: 5px;
     color: black;
@@ -462,7 +463,7 @@ footer a {
 .event-photo {
     flex: 1;
     max-width: 200px;
-    padding: 20px;  
+    padding: 20px;
 }
 
 .event-photo img {
@@ -470,9 +471,17 @@ footer a {
     max-height: 200px;
 }
 
-.event-details {   
+.event-details {
     flex: 4;
     padding: 20px;
+}
+
+.event-details a {
+    color: black;
+}
+
+.event-details a:hover {
+    color: white;
 }
 
 .event-details h4 {
@@ -521,7 +530,57 @@ footer a {
 }
 
 .event-button a:hover {
-    background-color: #e34a29; 
+    background-color: #e34a29;
+}
+
+.event-page-details {
+    flex-wrap: wrap;
+    padding: 15px;
+    color: black;
+    background-color: #4D7EA8;
+    margin: 20px 20px 5px;
+}
+
+.event-page-details h2 {
+    text-align: center;
+}
+
+.event-page-details h4 {
+    font-weight: bold;
+    /* Set line-height equal to the container height */
+    line-height: 35px;
+    /*text-align: center; !* Center the text horizontally *!*/
+    text-align: right;
+    padding-right: 55px;
+
+
+}
+
+.event-page-details img {
+    max-width: 200px;
+    max-height: 200px;
+    padding-left: 10px;
+}
+
+.event-page-details p {
+
+}
+
+
+.text-right-align {
+    text-align: right;
+    padding-right: 55px;
+
+}
+
+.oval-background {
+    background-color: #007bff; /* Bootstrap's primary color */
+    color: #fff; /* Text color */
+    border-radius: 25px; /* Adjust the border-radius to create an oval shape */
+    text-align: right;
+    /*padding-right: 55px;*/
+    padding: 10px 20px; /* Adjust padding as needed */
+    display: inline-block; /* Make it an inline-block to adjust width to content */
 }
 
 /* END OF EVENTS STYLES */
@@ -554,7 +613,7 @@ footer a {
 
 .submit_button {
     margin: 20px;
-  
+
     background-color: #000000;
     color: white;
     border: none;
@@ -567,6 +626,6 @@ footer a {
 }
 
 .submit_button:hover {
-    background-color: #e34a29; 
+    background-color: #e34a29;
 }
 

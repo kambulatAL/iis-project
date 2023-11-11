@@ -2,122 +2,128 @@
 {% load static %}
 
 {% block header_block %}
-    <header>
-        <a href="{% url 'home_page' %}" class="logo_header">Calendar</a>
-            <div class="nav"> 
-                {% if user.is_authenticated %}
-                    {% if user.is_moderator or user.is_admin %}
-                    <a href="{% url 'admin_page' %}">Admin Panel</a>
-                    {% endif %}
-                    <a href="#">My Calendar</a>
-                    <a href="#">Settings</a>
-                    <a href="{% url 'logout_page' %}">Log Out</a>
-                {% else %}
-                    <a href="{% url 'login_page' %}">Login</a>
-                    <a href="{% url 'register_page' %}">Sign Up</a>
-                {% endif %}
-        </div>
-    </header>
+<header>
+    <a href="{% url 'home_page' %}" class="logo_header">Calendar</a>
+    <div class="nav">
+        {% if user.is_authenticated %}
+        {% if user.is_moderator or user.is_admin %}
+        <a href="{% url 'admin_page' %}">Admin Panel</a>
+        {% endif %}
+        <a href="#">My Calendar</a>
+        <a href="#">Settings</a>
+        <a href="{% url 'logout_page' %}">Log Out</a>
+        {% else %}
+        <a href="{% url 'login_page' %}">Login</a>
+        <a href="{% url 'register_page' %}">Sign Up</a>
+        {% endif %}
+    </div>
+</header>
 {% endblock header_block %}
 
 
 {% block category_block %}
-        <!-- Add messages if something happened-->
-        {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+<!-- Add messages if something happened-->
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+<!-- Здесь будет весь контент будущий -->
+{% if user.is_authenticated %}
+<div class="add_category_button">
+    <a href="{% url 'new_category_page' %}">Add category</a>
+</div>
+{% endif %}
+<div class="category">
+    <h3>Category</h3>
+    <div>
+        <ul class="category_list">
+            {% for category in categories %}
+            {% if category.accepted %}
+            {% if category.approved_by_mods %}
+            <li class="category_element">
+                <a href="#">{{ category.name }}</a>
+            </li>
+            {% endif %}
+            {% endif %}
             {% endfor %}
         </ul>
-        {% endif %}
-        <!-- Здесь будет весь контент будущий -->
-        {% if user.is_authenticated %}
-            <div class="add_category_button">
-                <a = href="{% url 'new_category_page' %}">Add category</a>
-            </div>
-        {% endif %}
-        <div class="category">
-            <h3>Category</h3>
-            <div>
-                <ul class="category_list">
-                    {% for category in categories %}
-                        {% if category.accepted %}
-                            {% if category.approved_by_mods %}
-                                <li class="category_element">
-                                    <a href="#">{{ category.name }}</a>
-                                </li>
-                            {% endif %}
-                        {% endif %}
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
+    </div>
+</div>
 {% endblock category_block %}
 
 {% block content_block %}
 
-        {% if user.is_authenticated %}
-            <div class="add_event_button">
-                <a = href="{% url 'new_event_page' %}">Add event</a>
-            </div>
-        {% endif %}
-        <div class="main_container">
-            <h3>Events</h3>
-     
-                <div class="events_element">
-                    <div class="event-photo">
-                        <img src="{% static 'images/mbappe.jpg' %}" alt="Event Photo">
-                    </div>
-                    <div class="event-details">
-                        <h4>Event: Mbappe auto session</h4>
-                        <p>Date: 01.01.2023</p>
-                        <p>Location: Stadion de el Mbappe</p>
-                        <p>Capacity: 157/350</p>
-                    </div>
-                    <div class="event-details-more">
-                        <p>Cost: 0 eur</p>
-                        <p>Start: 18:00 - 22:00</p>
-                        <p>Category: Sport</p>
-                    </div>
+{% if user.is_authenticated %}
+<div class="add_event_button">
+    <a href="{% url 'new_event_page' %}">Add event</a>
+</div>
+{% endif %}
+<div class="main_container">
+    <h3>Events</h3>
 
-                    {% if user.is_authenticated %}
-                        <div class="event-button">
-                            <button>Join</button>
-                        </div>
-                    {% endif %}
-                </div> 
-                {% for event in events %}
-                {% if event.approved_by_mods %}
-                    <div class="events_element">
-                    {% if event.photo %}
-                    <div class="event-photo">
-                        <img src="{{ event.photo.url }}" alt="Event Photo">
-                    </div>
-                    {% endif %}
-                    <div class="event-details">
-                        <h4>Event: {{ event.name }}</h4>
-                        <p>Date: {{ event.start_date }} - {{ event.end_date }}</p>
-                        <p>Location: {{ event.event_place.city }} - {{event.event_place.street}}</p>
-                        <p>Capacity: {{ event.capacity }}</p>
-                    </div>
-                    <div class="event-details-more">
-                        <p>Cost: {{ event.ticket_price }} eur</p>
-                        <p>Start: {{ event.start_time }} - {{ event.end_time }}</p>
-                        <p>Category: 
-                            {% for category in event.categories.all %}
-                                | {{ category.name }} 
-                            {% endfor %}
-                        </p>
-                    </div>
-
-                    <!-- If user is logged in, he can see the buttons -->
-                    {% if user.is_authenticated %}
-                        <div class="event-button">
-                            <a href="#">Join</a>
-                        </div>
-                    {% endif %}
-                    </div>
-                {% endif %}
-                {% endfor %}
+    <div class="events_element">
+        <div class="event-photo">
+            <img src="{% static 'images/mbappe.jpg' %}" alt="Event Photo">
         </div>
+        <div class="event-details">
+            <h4>Event: Mbappe auto session</h4>
+            <p>Date: 01.01.2023</p>
+            <p>Location: Stadion de el Mbappe</p>
+            <p>Capacity: 157/350</p>
+        </div>
+        <div class="event-details-more">
+            <p>Cost: 0 eur</p>
+            <p>Start: 18:00 - 22:00</p>
+            <p>Category: Sport</p>
+        </div>
+
+        {% if user.is_authenticated %}
+<!--        <div class="event-button">-->
+<!--            <button>Join</button>-->
+<!--        </div>-->
+        {% endif %}
+    </div>
+    {% for event in events %}
+    {% if event.approved_by_mods %}
+    <div class="events_element">
+        {% if event.photo %}
+        <div class="event-photo">
+            <img src="{{ event.photo.url }}" alt="Event Photo">
+        </div>
+        {% endif %}
+        <div class="event-details">
+            <h4>Event: <a href="{% url 'event_page' event.pk %}">{{ event.name }}</a></h4>
+            <p>Date: {{ event.start_date }} - {{ event.end_date }}</p>
+            <p>Location: {{ event.event_place.city }} - {{event.event_place.street}}</p>
+            <p>Capacity: {{ event.capacity }}</p>
+        </div>
+        <div class="event-details-more">
+            <p>Cost: {{ event.ticket_price }} eur</p>
+            <p>Start: {{ event.start_time }} - {{ event.end_time }}</p>
+            <p>Category:
+                {% for category in event.categories.all %}
+                | {{ category.name }}
+                {% endfor %}
+            </p>
+        </div>
+        <!-- If user is logged in, he can see the buttons -->
+        {% if user.is_authenticated %}
+            {% if not user in event.registered_people.all %}
+            <div class="event-button">
+                <a href="{% url 'event_join_user_page' event.pk user.username %}">Join</a>
+            </div>
+            {%else%}
+            <div class="event-button">
+                <a href="#">Registered</a>
+            </div>
+            {% endif %}
+        {% endif %}
+
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
 {% endblock content_block %}

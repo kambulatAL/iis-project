@@ -2,9 +2,11 @@ from django import forms
 
 from events.models import EventPlace, Category
 
-class LoginForm(forms.Form): 
+
+class LoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
+
 
 class RegisterForm(forms.Form):
     username = forms.CharField()
@@ -20,8 +22,9 @@ class CategoryForm(forms.Form):
     subcategory = forms.ChoiceField(
         choices=[(None, 'None')] + [(category.name, category.name) for category in Category.objects.all()],
         required=False
-    
+
     )
+
 
 class EventForm(forms.Form):
     name = forms.CharField()

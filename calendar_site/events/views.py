@@ -6,14 +6,13 @@ from .forms import LoginForm, RegisterForm, EventForm, CategoryForm
 from django.contrib import messages
 
 
-
 ############################################################################################### Admin functions
 
-#function that delete user from database by username
+# function that delete user from database by username
 def delete_user(request, username):
     # check if user is admin
     if request.user.is_authenticated and request.user.is_admin:
-        try: 
+        try:
             user_to_delete = RegisteredUser.objects.get(username=username)
             user_to_delete.delete()
             # Add a success message
@@ -30,7 +29,9 @@ def moderator_required(view_func):
             return view_func(request, *args, **kwargs)
         else:
             return HttpResponse("You don't have moderator rights")
+
     return _wrapper
+
 
 # function that require admin rights
 def admin_required(view_func):
@@ -39,7 +40,9 @@ def admin_required(view_func):
             return view_func(request, *args, **kwargs)
         else:
             return HttpResponse("You don't have admin rights")
+
     return _wrapper
+
 
 # function that require login rights
 def login_required(view_func):
@@ -48,6 +51,7 @@ def login_required(view_func):
             return view_func(request, *args, **kwargs)
         else:
             return HttpResponse("You need to login")
+
     return _wrapper
 
 
@@ -57,16 +61,17 @@ def index(request):
     return render(request, "index.html", {"title": "Home page", "events": events, "categories": categories})
 
 
-
 @moderator_required
 def list_places(request):
     places = EventPlace.objects.all()
     return render(request, "admin_temps/list_places.html", {"title": "List of places", "places": places})
 
+
 @moderator_required
 def list_events(request):
     events = Event.objects.all()
     return render(request, "admin_temps/list_events.html", {"title": "List of events", "events": events})
+
 
 # Make sure, that user is admin
 @admin_required
@@ -74,14 +79,12 @@ def list_users(request):
     users = RegisteredUser.objects.all()
     return render(request, "admin_temps/list_users.html", {"title": "List of users", "users": users})
 
+
 @moderator_required
 def list_categories(request):
     categories = Category.objects.all()
-    return render(request, "admin_temps/list_categories.html", {"title": "List of categories", "categories": categories})
-
-
-
-
+    return render(request, "admin_temps/list_categories.html",
+                  {"title": "List of categories", "categories": categories})
 
 
 #######################################################################################
@@ -110,7 +113,7 @@ def create_category(request):
         else:
             print("Form is not valid")
             print(form.errors)
-    else: 
+    else:
         form = CategoryForm()
 
     category_names = Category.objects.all()
@@ -120,6 +123,26 @@ def create_category(request):
         "form": form
     }
     return render(request, "create_category.html", context)
+
+
+@login_required
+def join_user_event(request, event_id, username):
+    if request.user.is_authenticated:
+        try:
+            user = RegisteredUser.objects.get(username=username)
+            event = Event.objects.get(pk=event_id)
+            event.registered_people.add(user)
+            event.save()
+            messages.success(request, f"User {username} has successfully joined to the '{event.name}' event.")
+        except RegisteredUser.DoesNotExist:
+            return HttpResponse("User does not exist")
+        return redirect("home_page")
+
+
+def show_event_page(request, event_id):
+    event = Event.objects.get(pk=event_id)
+    return render(request, 'event_page.html', {"event": event})
+
 
 @login_required
 def create_event(request):
@@ -153,7 +176,7 @@ def create_event(request):
                 created=request.user
             )
             event.save()
-            
+
             # Add a success message
             messages.success(request, f"Event {name} has been successfully created.")
 
@@ -161,9 +184,9 @@ def create_event(request):
         else:
             print("Form is not valid")
             print(form.errors)
-    else: 
+    else:
         form = EventForm()
-    
+
     event_places = EventPlace.objects.all()
     context = {
         "title": "Create event page",
@@ -178,6 +201,7 @@ def create_event(request):
 def admin_view(request):
     return render(request, "admin_temps/admin_page.html", {"title": "Admin page"})
 
+
 @moderator_required
 def approve_category(request, category_id):
     try:
@@ -190,6 +214,7 @@ def approve_category(request, category_id):
     except Category.DoesNotExist:
         return HttpResponse("Category does not exist")
     return redirect("list_categories_page")
+
 
 @moderator_required
 def reject_category(request, category_id):
@@ -204,6 +229,7 @@ def reject_category(request, category_id):
         return HttpResponse("Category does not exist")
     return redirect("list_categories_page")
 
+
 @moderator_required
 def approve_event(request, event_id):
     try:
@@ -216,6 +242,7 @@ def approve_event(request, event_id):
     except Event.DoesNotExist:
         return HttpResponse("Event does not exist")
     return redirect("list_events_page")
+
 
 @moderator_required
 def reject_event(request, event_id):
@@ -232,11 +259,11 @@ def reject_event(request, event_id):
     return redirect("list_events_page")
 
 
-
 #######################################################################################
 def logout_view(request):
     logout(request)
     return redirect("home_page")
+
 
 def login_view(request):
     if request.method == 'POST':
@@ -256,6 +283,7 @@ def login_view(request):
 
     return render(request, "login_temps/login.html", {"title": "Login page", "form": form})
 
+
 def register_view(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
@@ -269,21 +297,24 @@ def register_view(request):
 
             print(username, name, surname, email, phone_number, password)
 
+            if RegisteredUser.objects.filter(username=username).exists():
+                return HttpResponse("User with this name already exists.")
             if email:
-               RegisteredUser.create_user(username, name, surname, email, phone_number, password=password)
-               user = authenticate(request, username=username, password=password)
+                RegisteredUser.create_user(username, name, surname, email, phone_number, password=password)
+                user = authenticate(request, username=username, password=password)
 
-               if user is not None:
-                   login(request, user)
-                   return redirect("home_page")
-               else:
-                   return HttpResponse("There are some problems with registration. Try again later")
+                if user is not None:
+                    login(request, user)
+                    return redirect("home_page")
+                else:
+                    return HttpResponse("There are some problems with registration. Try again later")
             else:
                 return HttpResponse("Invalid email")
     else:
         form = RegisterForm()
 
     return render(request, "login_temps/register.html", {"title": "Register page", "form": form})
+
 
 #######################################################################################
 
