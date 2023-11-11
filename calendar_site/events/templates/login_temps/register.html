@@ -3,7 +3,7 @@
 
 {% block header_block %}
     <header>
-        <h1 class="logo_header">Calendar</h1>
+        <a href="{% url 'home_page' %}" class="logo_header">Calendar</a>
             <div class="nav"> 
                 <a href="{% url 'home_page' %}">Main Page</a>
                 <a href="{% url 'login_page' %}">Login</a>

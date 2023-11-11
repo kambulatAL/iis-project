@@ -3,7 +3,7 @@
 
 {% block header_block %}
     <header>
-        <h1 class="logo_header">Calendar</h1>
+        <a href="{% url 'home_page' %}" class="logo_header">Calendar</a>
             <div class="nav"> 
                 {% if user.is_authenticated %}
                     {% if user.is_moderator or user.is_admin %}
@@ -40,12 +40,15 @@
             <h3>Category</h3>
             <div>
                 <ul class="category_list">
-                    <li><a href="#">All categories</a></li>
-                    <li><a href="#">Sport</a></li>
-                    <li><a href="#">Music</a></li>
-                    <li><a href="#">Cinema</a></li>
-                    <li><a href="#">Food</a></li>
-                    <li><a href="#">Programmer meeting</a></li>
+                    {% for category in categories %}
+                        {% if category.accepted %}
+                            {% if category.approved_by_mods %}
+                                <li class="category_element">
+                                    <a href="#">{{ category.name }}</a>
+                                </li>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
                 </ul>
             </div>
         </div>
@@ -60,7 +63,7 @@
         {% endif %}
         <div class="main_container">
             <h3>Events</h3>
-            <!--
+     
                 <div class="events_element">
                     <div class="event-photo">
                         <img src="{% static 'images/mbappe.jpg' %}" alt="Event Photo">
@@ -77,15 +80,15 @@
                         <p>Category: Sport</p>
                     </div>
 
-                   If user is logged in, he can see the buttons 
                     {% if user.is_authenticated %}
                         <div class="event-button">
                             <button>Join</button>
                         </div>
                     {% endif %}
-                </div> -->
+                </div> 
                 {% for event in events %}
-                <div class="events_element">
+                {% if event.approved_by_mods %}
+                    <div class="events_element">
                     {% if event.photo %}
                     <div class="event-photo">
                         <img src="{{ event.photo.url }}" alt="Event Photo">
@@ -110,10 +113,11 @@
                     <!-- If user is logged in, he can see the buttons -->
                     {% if user.is_authenticated %}
                         <div class="event-button">
-                            <button>Join</button>
+                            <a href="#">Join</a>
                         </div>
                     {% endif %}
-                </div>
+                    </div>
+                {% endif %}
                 {% endfor %}
         </div>
 {% endblock content_block %}

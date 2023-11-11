@@ -30,12 +30,36 @@ RegisteredUser.create_user('user_login', 'user_name', 'user_surname', 'user_emai
 
 
 # Create default categories
-Category.objects.create(name='Music')
-Category.objects.create(name='Sport')
-Category.objects.create(name='All categories')
-Category.objects.create(name='Programmer meeting')
-Category.objects.create(name='Food')
-Category.objects.create(name='Movies')
+Category.objects.create(
+    name='Music',
+    accepted=Worker.objects.get(worker=RegisteredUser.objects.get(username='xassat00')),
+    approved_by_mods=True
+    )
+Category.objects.create(
+    name='Sport',
+    accepted=Worker.objects.get(worker=RegisteredUser.objects.get(username='xassat00')),
+    approved_by_mods=True
+    )
+Category.objects.create(
+    name='All categories',
+    accepted=Worker.objects.get(worker=RegisteredUser.objects.get(username='xassat00')),
+    approved_by_mods=True
+    )
+Category.objects.create(
+    name='Programmer meeting',
+    accepted=Worker.objects.get(worker=RegisteredUser.objects.get(username='xassat00')),
+    approved_by_mods=True
+    )
+Category.objects.create(
+    name='Food',
+    accepted=Worker.objects.get(worker=RegisteredUser.objects.get(username='xassat00')),
+    approved_by_mods=True
+    )
+Category.objects.create(
+    name='Movies',
+    accepted=Worker.objects.get(worker=RegisteredUser.objects.get(username='xassat00')),
+    approved_by_mods=True
+    )
 
 
 # Create event places
@@ -80,7 +104,8 @@ event1 = Event.objects.create(
     description="Description of Event 1",
     event_place=EventPlace.objects.get(place_id=1),
     created=RegisteredUser.objects.get(username='xblanco00'),
-    accepted=Worker.objects.get(worker=RegisteredUser.objects.get(username='xassat00'))
+    accepted=Worker.objects.get(worker=RegisteredUser.objects.get(username='xassat00')),
+    approved_by_mods=True
 )
 
 event1.categories.add(Category.objects.get(name='Music'))

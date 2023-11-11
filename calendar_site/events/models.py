@@ -9,8 +9,6 @@ default_pass = 'user_pass'
 # represents "Registrovany uzivatel" from the ER diagram
 class RegisteredUser(AbstractUser):
     username = models.CharField(max_length=100, primary_key=True)
-    name = models.CharField(max_length=255) # НЕ ЮЗАЕТСЯ юзается first_name
-    surname = models.CharField(max_length=255) # НЕ ЮЗАЕТСЯ юзается last_name
     password = models.CharField(max_length=100)
     email = models.EmailField(max_length=255)
     phone_number = models.CharField(max_length=20)
@@ -68,6 +66,9 @@ class EventPlace(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=255)
     subcategory = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True, blank=True, related_name='category_subcategory')
+
+    accepted = models.ForeignKey(Worker, on_delete=models.CASCADE, null=True, blank=True, related_name='category_accepted')
+    approved_by_mods = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

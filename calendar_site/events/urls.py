@@ -30,6 +30,11 @@ urlpatterns += [
     path('admin_page/users/delete_user/<str:username>/', views.delete_user, name='delete_user_page'),
     path('admin_page/places/', views.list_places, name='list_places_page'),
     path('admin_page/events/', views.list_events, name='list_events_page'),
+    path('admin_page/events/approve_event/<int:event_id>/', views.approve_event, name='approve_event_page'),
+    path('admin_page/events/reject_event/<int:event_id>/', views.reject_event, name='reject_event_page'),
+    path('admin_page/categories/', views.list_categories, name='list_categories_page'),
+    path('admin_page/categories/approve_category/<int:category_id>/', views.approve_category, name='approve_category_page'),
+    path('admin_page/categories/reject_category/<int:category_id>/', views.reject_category, name='reject_category_page'),
 ]
 
 if settings.DEBUG:

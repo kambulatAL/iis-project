@@ -36,6 +36,8 @@ header {
     width: 70%;
     display: block;
     background-color: #86b049;
+    color: black;
+    font-weight: 700;
     border: 1px solid #ccc;
     border-radius: 5px;
     margin: 20px auto;
@@ -182,23 +184,23 @@ footer a {
     padding: 30px;
 }
 
-.form_event {
+.form_class {
     display: flex;
     flex-direction: column;
     padding: 20px;
 }
-.form_event button {
+.form_class button {
     width: 300px; 
     margin: auto;   
 }
 
-.form_event label {
+.form_class label {
     font-size: 24px;
     padding: 10px;
     text-align: center;
 }
 
-.form_event input, select, textarea{
+.form_class input, select, textarea{
     margin: auto;
     border-radius: 5px;
     width: 500px;
@@ -326,6 +328,76 @@ footer a {
     color: black;
 }
 
+.event_aprovals .approved {
+    color:#317b35;
+    font-weight: 700;
+    font-size: 17px;
+}
+
+.event_aprovals .rejected {
+    color:#a0190a;
+    font-weight: 700;
+    font-size: 17px;
+}
+
+
+/* MAIN BUTTON STYLES   */
+.button_approve {
+    background-color: #4CAF50; 
+    color: white;
+    padding: 10px; 
+    margin: 5px;
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    transition: background-color 0.3s;
+}
+
+.button_approve:hover {
+    background-color: #317b35;
+}
+
+.button_reject {
+    background-color: #FF5733; 
+    color: white; 
+    padding: 10px; 
+    margin: 5px;
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    transition: background-color 0.3s; 
+}
+
+.button_reject:hover {
+    background-color: #a0190a;
+}
+
+.button_more {
+    background-color: #5d5d5d;
+    color: white; 
+    padding: 10px; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    transition: background-color 0.3s; 
+}
+
+.button_more:hover {
+    background-color: #272932; 
+}
+
+/* MAIN BUTTON STYLES END  */
+.button-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.button_approve,
+.button_reject,
+.button_more {
+    display: block;
+    margin-bottom: 10px; 
+}
 
 /* Button to add event */
 
@@ -436,7 +508,7 @@ footer a {
     padding: 15px;
 }
 
-.event-button button {
+.event-button a {
     background-color: #000000;
     color: white;
     border: none;
@@ -448,7 +520,7 @@ footer a {
     transition: background-color 0.2s;
 }
 
-.event-button button:hover {
+.event-button a:hover {
     background-color: #e34a29; 
 }
 

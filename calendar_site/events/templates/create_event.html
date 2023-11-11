@@ -4,19 +4,15 @@
 
 {% block header_block %}
     <header>
-        <h1 class="logo_header">Calendar</h1>
+        <a href="{% url 'home_page' %}" class="logo_header">Calendar</a>
             <div class="nav"> 
-                {% if user.is_authenticated %}
-                    {% if user.is_moderator or user.is_admin %}
-                    <a href="{% url 'admin_page' %}">Admin Panel</a>
-                    {% endif %}
-                    <a href="#">My Calendar</a>
-                    <a href="#">Settings</a>
-                    <a href="{% url 'logout_page' %}">Log Out</a>
-                {% else %}
-                    <a href="{% url 'login_page' %}">Login</a>
-                    <a href="{% url 'register_page' %}">Sign Up</a>
+                {% if user.is_moderator or user.is_admin %}
+                <a href="{% url 'admin_page' %}">Admin Panel</a>
                 {% endif %}
+                <a href="{% url 'home_page' %}">Home</a>
+                <a href="#">My Calendar</a>
+                <a href="#">Settings</a>
+                <a href="{% url 'logout_page' %}">Log Out</a>
         </div>
     </header>
 {% endblock header_block %}
@@ -25,51 +21,51 @@
 
 {% block content_block %} 
     <div class="create_container">
-        <h2>Create new event</h2>
+        <h2>Create new category</h2>
 
         <div class="create_container_fill">
             <form method="POST">
                 {% csrf_token %} 
-                <div class="form_event">
+                <div class="form_class">
                     <label for="name">Name of the Event:</label>
                     <input type="text" id="name" name="name" required>
                     
                 </div>
                 
-                <div class="form_event">
+                <div class="form_class">
                     <label for="start_date">Start Date:</label>
                     <input type="date" id="start_date" name="start_date" required>
                     <label for="end_date">End Date:</label>
                     <input type="date" id="end_date" name="end_date">
                 </div>
                 
-                <div class="form_event">
+                <div class="form_class">
                     <label for="start_time">Start Time:</label>
                     <input type="time" id="start_time" name="start_time" required>
                     <label for="end_time">End Time:</label>
                     <input type="time" id="end_time" name="end_time">
                 </div>
 
-                <div class="form_event">
+                <div class="form_class">
                     <label for="place">Event Place:</label>
                     <select id="place" name="place">
                         {% for place in event_places %}
-                            <option value="{{ place.place_id }}">{{ place.city }} - {{ place.street }}</option>
+                            <option value="{{ place.place_id }}" selected="selected">{{ place.city }} - {{ place.street }}</option>
                         {% endfor %}
                     </select>
                 </div>
 
-                <div class="form_event">
+                <div class="form_class">
                     <label for="capacity">Capacity:</label>
                     <input type="number" id="capacity" name="capacity" required>
                 </div>
 
-                <div class="form_event">
+                <div class="form_class">
                     <label for="description">Description:</label>
                     <textarea id="description" name="description" rows="4"></textarea>
                 </div>
 
-                <div class="form_event">
+                <div class="form_class">
                     <label for="photo">Event Photo:</label>
                         <div class="file_input">
                             <input type="file" id="photo" name="photo" class="file">
@@ -79,12 +75,12 @@
                         </div>
                 </div>
 
-                <div class="form_event">
+                <div class="form_class">
                     <label for="ticket_price">Ticket Price:</label>
                     <input type="number" id="ticket_price" name="ticket_price" required>
                 </div>
 
-                <div class="form_event">
+                <div class="form_class">
                     <button class="submit_button" type="submit">Create Event</button>
                 </div>
             </form>

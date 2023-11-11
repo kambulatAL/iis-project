@@ -3,11 +3,11 @@
 
 {% block admin_content %}
 {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
+<div class="messages">
+    {% for message in messages %}
+        {% if message.tags %} "{{ message.tags }}"{% endif %}>{{ message }}
+    {% endfor %}
+</div>
 {% endif %}
 
         <h3>Users</h3>

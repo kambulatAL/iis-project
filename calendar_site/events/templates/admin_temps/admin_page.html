@@ -4,7 +4,7 @@
 
 {% block header_block %}
     <header>
-        <h1 class="logo_header">Calendar</h1>
+        <a href="{% url 'home_page' %}" class="logo_header">Calendar</a>
         <div class="nav"> 
             <a href="{% url 'home_page' %}">Home</a>
             <a href="#">My Calendar</a>
@@ -32,7 +32,7 @@
                         <a href="{% url 'list_events_page' %}">Events</a>
                     </li>
                     <li>
-                        <a href="#">Categories</a>
+                        <a href="{% url 'list_categories_page' %}">Categories</a>
                     </li>
                 </ul>
             </div>

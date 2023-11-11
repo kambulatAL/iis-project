@@ -1,8 +1,8 @@
 from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from events.models import RegisteredUser, EventPlace, Event
-from .forms import LoginForm, RegisterForm, EventForm
+from events.models import RegisteredUser, EventPlace, Event, Worker, Category
+from .forms import LoginForm, RegisterForm, EventForm, CategoryForm
 from django.contrib import messages
 
 
@@ -53,15 +53,17 @@ def login_required(view_func):
 
 def index(request):
     events = Event.objects.all()
-    return render(request, "index.html", {"title": "Home page", "events": events})
+    categories = Category.objects.all()
+    return render(request, "index.html", {"title": "Home page", "events": events, "categories": categories})
 
 
 
-
+@moderator_required
 def list_places(request):
     places = EventPlace.objects.all()
     return render(request, "admin_temps/list_places.html", {"title": "List of places", "places": places})
 
+@moderator_required
 def list_events(request):
     events = Event.objects.all()
     return render(request, "admin_temps/list_events.html", {"title": "List of events", "events": events})
@@ -72,6 +74,10 @@ def list_users(request):
     users = RegisteredUser.objects.all()
     return render(request, "admin_temps/list_users.html", {"title": "List of users", "users": users})
 
+@moderator_required
+def list_categories(request):
+    categories = Category.objects.all()
+    return render(request, "admin_temps/list_categories.html", {"title": "List of categories", "categories": categories})
 
 
 
@@ -81,7 +87,39 @@ def list_users(request):
 #######################################################################################
 @login_required
 def create_category(request):
-    return HttpResponse("Create category page")
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data.get("name")
+            subcategory = form.cleaned_data.get("subcategory")
+            # check if name is unique
+            if Category.objects.filter(name=name).exists():
+                return HttpResponse("Category with this name already exists")
+
+            if subcategory == "None":
+                new_category = Category.objects.create(name=name)
+                new_category.save()
+            elif subcategory != "None":
+                new_category = Category.objects.create(name=name, subcategory=Category.objects.get(name=subcategory))
+                new_category.save()
+            else:
+                return HttpResponse("Something went wrong during category creation")
+            # Add a success message
+            messages.success(request, f"Category {name} has been successfully created. ")
+            return redirect("home_page")
+        else:
+            print("Form is not valid")
+            print(form.errors)
+    else: 
+        form = CategoryForm()
+
+    category_names = Category.objects.all()
+    context = {
+        "title": "Create category page",
+        "category_names": category_names,
+        "form": form
+    }
+    return render(request, "create_category.html", context)
 
 @login_required
 def create_event(request):
@@ -100,18 +138,7 @@ def create_event(request):
             place = form.cleaned_data.get("place")
             photo = form.cleaned_data.get("photo")
             ## TODO: need to add checking if place is not None and etc....
-
-            # Create event
-            #print(request.user)
-            #print("Name: " + name)
-            #print("Start date: " + str(start_date))
-            #print("End date: " + str(end_date))
-            #print("Start time: " + str(start_time))
-            #print("End time: " + str(end_time))
-            #print("Capacity: " + str(capacity))
-            #print("Description: " + description)
-            #print("Ticket price: " + str(ticket_price))
-            #print("Place: " + str(place.place_id))
+            ## TODO: need to add categories
 
             event = Event(
                 name=name,
@@ -126,7 +153,6 @@ def create_event(request):
                 created=request.user
             )
             event.save()
-            # TODO: Need to add categories
             
             # Add a success message
             messages.success(request, f"Event {name} has been successfully created.")
@@ -152,8 +178,58 @@ def create_event(request):
 def admin_view(request):
     return render(request, "admin_temps/admin_page.html", {"title": "Admin page"})
 
+@moderator_required
+def approve_category(request, category_id):
+    try:
+        category = Category.objects.get(id=category_id)
+        category.approved_by_mods = True
+        category.accepted = Worker.objects.get(worker=request.user)
+        category.save()
+        # Add a success message
+        messages.success(request, f"Category {category.name} has been successfully approved.")
+    except Category.DoesNotExist:
+        return HttpResponse("Category does not exist")
+    return redirect("list_categories_page")
 
+@moderator_required
+def reject_category(request, category_id):
+    try:
+        category = Category.objects.get(id=category_id)
+        category.approved_by_mods = False
+        category.accepted = Worker.objects.get(worker=request.user)
+        category.save()
+        # Add a success message
+        messages.success(request, f"Category {category.name} has been successfully rejected.")
+    except Category.DoesNotExist:
+        return HttpResponse("Category does not exist")
+    return redirect("list_categories_page")
 
+@moderator_required
+def approve_event(request, event_id):
+    try:
+        event = Event.objects.get(event_id=event_id)
+        event.approved_by_mods = True
+        event.accepted = Worker.objects.get(worker=request.user)
+        event.save()
+        # Add a success message
+        messages.success(request, f"Event {event.name} has been successfully approved.")
+    except Event.DoesNotExist:
+        return HttpResponse("Event does not exist")
+    return redirect("list_events_page")
+
+@moderator_required
+def reject_event(request, event_id):
+    try:
+        print(request.user)
+        event = Event.objects.get(event_id=event_id)
+        event.approved_by_mods = False
+        event.accepted = Worker.objects.get(worker=request.user)
+        event.save()
+        # Add a success message
+        messages.success(request, f"Event {event.name} has been successfully rejected.")
+    except Event.DoesNotExist:
+        return HttpResponse("Event does not exist")
+    return redirect("list_events_page")
 
 
 
