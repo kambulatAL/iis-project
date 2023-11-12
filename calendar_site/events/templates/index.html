@@ -93,6 +93,8 @@
         <div class="event-photo">
             <img src="{{ event.photo.url }}" alt="Event Photo">
         </div>
+        {% else %}
+            <p>No photo available</p>
         {% endif %}
         <div class="event-details">
             <h4>Event: <a href="{% url 'event_page' event.pk %}">{{ event.name }}</a></h4>

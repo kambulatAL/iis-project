@@ -24,7 +24,7 @@
         <h2>Create new category</h2>
 
         <div class="create_container_fill">
-            <form method="POST">
+            <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %} 
                 <div class="form_class">
                     <label for="name">Name of the Event:</label>

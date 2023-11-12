@@ -162,7 +162,7 @@ def create_event(request):
             photo = form.cleaned_data.get("photo")
             ## TODO: need to add checking if place is not None and etc....
             ## TODO: need to add categories
-
+            
             event = Event(
                 name=name,
                 start_date=start_date,
@@ -173,7 +173,8 @@ def create_event(request):
                 description=description,
                 ticket_price=ticket_price,
                 event_place=place,
-                created=request.user
+                created=request.user,
+                photo=photo
             )
             event.save()
 

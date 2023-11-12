@@ -87,7 +87,7 @@ class Event(models.Model):
     capacity = models.IntegerField()
     ticket_price = models.IntegerField()
     description = models.TextField(null=True)
-    photo = models.ImageField(upload_to=f"Photos/events/{event_id}/%y/%m/%d/")
+    photo = models.ImageField(upload_to=f"images/events/{event_id}/")
 
     # foreign key represents the "Kona se" relation from the ERD
     event_place = models.ForeignKey(EventPlace, on_delete=models.SET_NULL, null=True, blank=True, related_name='event_event_place')

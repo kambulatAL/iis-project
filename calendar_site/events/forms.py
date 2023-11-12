@@ -41,4 +41,4 @@ class EventForm(forms.Form):
         widget=forms.Select(attrs={'class': 'form-control'})
     )
 
-    photo = forms.ImageField(required=False)
+    photo = forms.ImageField(required=False, label='Event photo')
