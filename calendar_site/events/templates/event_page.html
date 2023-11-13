@@ -25,24 +25,46 @@
 {% block content_block %}
 <!--<div class="events_element">-->
 <div class="event-page-details">
+    <h2>{{event.name}}</h2>
+
+    <h3>Created by: {{event.created}}</h3>
+    <h3>Approved by: {{event.accepted.worker.username}}</h3>
+
     {% if event.photo %}
     <img src="{{ event.photo.url }}" alt="Event Photo">
     {% endif %}
 
-    <h2>{{event.name}}</h2>
 
     <div class="text-right-align">
         {% for category in event.categories.all %}
-            <p class="oval-background">{{ category.name }}</p>
+        <p class="oval-background">{{ category.name }}</p>
         {% endfor %}
     </div>
 
-    <h4>Location: {{ event.event_place.city }} - {{event.event_place.street}}</h4>
-    <h4>Date: {{ event.start_date }} - {{ event.end_date }}</h4>
-    <h4>Start: {{ event.start_time }} - {{ event.end_time }}</h4>
-    <h4>Capacity: {{ event.capacity }}</h4>
-    <h4>Cost: {{ event.ticket_price }} eur</h4>
+    <h4>Location:   {{ event.event_place.city }} - {{event.event_place.street}}</h4>
+    <h4>Date:       {{ event.start_date }} - {{ event.end_date }}</h4>
+    <h4>Start:      {{ event.start_time }} - {{ event.end_time }}</h4>
+    <h4>Capacity:   {{ event.capacity }}</h4>
+    <h4>Enrolled People: {{ enrolled_people }}</h4>
+    <h4>Cost:       {{ event.ticket_price }} eur</h4>
+    <p>{{ event.description }}</p>
+
+    {% if user.is_authenticated %}
+        {% if not user in event.registered_people.all %}
+            <div class="event-button">
+                <a href="{% url 'event_join_user_page' event.pk user.username %}">Join</a>
+            </div>
+        {%else%}
+            <div class="event-button">
+                <a href="#">Registered</a>
+            </div>
+        {% endif %}
+
+        {% if username == created  %}
+            <a href="{% url 'enrolled_people' event.pk %}">List enrolled people</a>
+        {% endif %}
+    {% endif %}
+
 </div>
 
-<!--</div>-->
 {% endblock content_block %}

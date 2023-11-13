@@ -535,21 +535,26 @@ footer a {
 
 .event-page-details {
     flex-wrap: wrap;
-    padding: 15px;
+    padding: 25px;
     color: black;
     background-color: #4D7EA8;
     margin: 20px 20px 5px;
 }
 
 .event-page-details h2 {
+    position: relative;
     text-align: center;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 0;
 }
 
 .event-page-details h4 {
     font-weight: bold;
     /* Set line-height equal to the container height */
     line-height: 35px;
-    /*text-align: center; !* Center the text horizontally *!*/
+    /*transform: translate(-50%, -50%);*/
     text-align: right;
     padding-right: 55px;
 
@@ -557,13 +562,14 @@ footer a {
 }
 
 .event-page-details img {
-    max-width: 200px;
-    max-height: 200px;
+    position: relative;
+    max-width: 400px;
+    max-height: 400px;
     padding-left: 10px;
 }
 
 .event-page-details p {
-
+    text-align: center;
 }
 
 
@@ -581,6 +587,15 @@ footer a {
     /*padding-right: 55px;*/
     padding: 10px 20px; /* Adjust padding as needed */
     display: inline-block; /* Make it an inline-block to adjust width to content */
+}
+
+.list-enrolled-users{
+    flex-wrap: wrap;
+    color: black;
+    background-color: #4D7EA8;
+    margin: 20px 20px 5px;
+    text-align: left;
+    padding: 25px 25px 25px 4px;
 }
 
 /* END OF EVENTS STYLES */

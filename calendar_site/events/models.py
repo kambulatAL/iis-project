@@ -6,6 +6,8 @@ from django.contrib.auth.models import AbstractUser
 # TODO: то есть, есть модель Worker, а в базе она называется events_worker
 # TODO: это немного не удобно, но я не знаю, как это исправить
 default_pass = 'user_pass'
+
+
 # represents "Registrovany uzivatel" from the ER diagram
 class RegisteredUser(AbstractUser):
     username = models.CharField(max_length=100, primary_key=True)
@@ -15,12 +17,12 @@ class RegisteredUser(AbstractUser):
 
     is_moderator = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
-    
 
     def __str__(self):
         return self.username
-    
-    def create_user(username, name, surname, email, phone_number, is_admin=False, is_moderator=False, password=default_pass):
+
+    def create_user(username, name, surname, email, phone_number, is_admin=False, is_moderator=False,
+                    password=default_pass):
         user = RegisteredUser.objects.create_user(username=username, password=password)
         user.first_name = name
         user.last_name = surname
@@ -57,17 +59,22 @@ class EventPlace(models.Model):
     photo = models.ImageField(upload_to=f"Photos/places/{place_id}/%y/%m/%d/", null=True)
     # foreign key represents the "Navrhl" relation from the ERD
     created = models.ForeignKey(RegisteredUser,
-                                on_delete=models.CASCADE, related_name='event_place_created')  # how to make creation ???? - in the moment of creation by user?
+                                on_delete=models.CASCADE,
+                                related_name='event_place_created')  # how to make creation ???? - in the moment of creation by user?
     # foreign key represents the "Schvalil" relation from the ERD
     accepted = models.ForeignKey(Worker, on_delete=models.CASCADE, null=True,
-                                 blank=True, related_name='event_place_accepted')  # how to make accepting ???? after the moment of creation by user?
+                                 blank=True,
+                                 related_name='event_place_accepted')  # how to make accepting ???? after the moment of creation by user?
+
 
 # represents "Kategorie" from the ER diagram
 class Category(models.Model):
     name = models.CharField(max_length=255)
-    subcategory = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True, blank=True, related_name='category_subcategory')
+    subcategory = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True, blank=True,
+                                    related_name='category_subcategory')
 
-    accepted = models.ForeignKey(Worker, on_delete=models.CASCADE, null=True, blank=True, related_name='category_accepted')
+    accepted = models.ForeignKey(Worker, on_delete=models.CASCADE, null=True, blank=True,
+                                 related_name='category_accepted')
     approved_by_mods = models.BooleanField(default=False)
 
     def __str__(self):
@@ -80,34 +87,34 @@ class Event(models.Model):
     event_id = models.AutoField(primary_key=True)
     start_date = models.DateField(null=False, default='2021-01-01')
     end_date = models.DateField(null=True)
-    
-    start_time = models.TimeField(null=False, default='12:30') # А что если ивент будет длится несколько дней? или 24 часа или весь день просто???
+
+    start_time = models.TimeField(null=False, default='12:30')
     end_time = models.TimeField(null=True)
 
     capacity = models.IntegerField()
     ticket_price = models.IntegerField()
     description = models.TextField(null=True)
-    photo = models.ImageField(upload_to=f"images/events/{event_id}/")
+    photo = models.ImageField(upload_to=f"images/events/%y/%m/%d/")
 
     # foreign key represents the "Kona se" relation from the ERD
-    event_place = models.ForeignKey(EventPlace, on_delete=models.SET_NULL, null=True, blank=True, related_name='event_event_place')
+    event_place = models.ForeignKey(EventPlace, on_delete=models.SET_NULL, null=True, blank=True,
+                                    related_name='event_event_place')
 
     # foreign key represents the "zalozil" relation from the ERD
-    created = models.ForeignKey(RegisteredUser, on_delete=models.CASCADE, related_name='event_created')  # how to make creation ???? - in the moment of creation by user?
+    created = models.ForeignKey(RegisteredUser, on_delete=models.CASCADE,
+                                related_name='event_created')  # how to make creation ???? - in the moment of creation by user?
 
     # foreign key represents the "Schvalil" relation from the ERD
     # this field means accepted by moderator
-    accepted = models.ForeignKey(Worker, on_delete=models.CASCADE, null=True, blank=True, related_name='event_accepted')  # how to make accepting ???? - after the moment of creation by  user?
+    accepted = models.ForeignKey(Worker, on_delete=models.CASCADE, null=True, blank=True,
+                                 related_name='event_accepted')  # how to make accepting ???? - after the moment of creation by  user?
 
     # Many-to-many represents the "Patri" relation from the ERD
     categories = models.ManyToManyField(Category, related_name='event_category')
 
     # Many-to-many represents the "Registrovan" relation from the ERD
     registered_people = models.ManyToManyField(RegisteredUser)
-
     approved_by_mods = models.BooleanField(default=False)
-
-
 
 
 # represents "Hodnoceni" from the ER diagram

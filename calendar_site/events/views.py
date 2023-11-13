@@ -141,7 +141,17 @@ def join_user_event(request, event_id, username):
 
 def show_event_page(request, event_id):
     event = Event.objects.get(pk=event_id)
-    return render(request, 'event_page.html', {"event": event})
+    reg_users_count = len(event.registered_people.all())
+    created = str(event.created)
+    username = str(request.user.username)
+    return render(request, 'event_page.html',
+                  {"event": event, "enrolled_people": reg_users_count, "created": created, "username": username})
+
+
+def list_enrolled_users(request, event_id):
+    event = Event.objects.get(pk=event_id)
+    reg_users = list(event.registered_people.all())
+    return render(request, 'list_enrolled_people.html', {"enrolled_people": reg_users})
 
 
 @login_required
@@ -162,7 +172,7 @@ def create_event(request):
             photo = form.cleaned_data.get("photo")
             ## TODO: need to add checking if place is not None and etc....
             ## TODO: need to add categories
-            
+
             event = Event(
                 name=name,
                 start_date=start_date,
@@ -179,7 +189,7 @@ def create_event(request):
             event.save()
 
             # Add a success message
-            messages.success(request, f"Event {name} has been successfully created.")
+            messages.success(request, f"Event {name} has been sent for approval.")
 
             return redirect("home_page")
         else:
