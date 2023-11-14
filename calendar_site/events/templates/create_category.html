@@ -36,7 +36,11 @@
                     <select id="subcategory" name="subcategory">
                         <option value="None" selected="selected">None</option>
                         {% for category in category_names %}
-                            <option value="{{ category.name }}">{{ category.name }}</option>
+                            {% if category.accepted %}
+                                {% if category.approved_by_mods %}
+                                    <option value="{{ category.name }}">{{ category.name }}</option>
+                                {% endif %}
+                            {% endif %}
                         {% endfor %}
                     </select>
                 </div>

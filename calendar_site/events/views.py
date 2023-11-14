@@ -170,8 +170,11 @@ def create_event(request):
             ticket_price = form.cleaned_data.get("ticket_price")
             place = form.cleaned_data.get("place")
             photo = form.cleaned_data.get("photo")
-            ## TODO: need to add checking if place is not None and etc....
-            ## TODO: need to add categories
+            
+            # Add categories from checkboxes
+            categories = form.cleaned_data.get("categories")
+            # print it to console
+            print(categories)
 
             event = Event(
                 name=name,
@@ -186,8 +189,13 @@ def create_event(request):
                 created=request.user,
                 photo=photo
             )
-            event.save()
 
+            event.save()
+            # Add categories from checkboxes
+            for category in categories:
+                event.categories.add(Category.objects.get(name=category.name))
+                
+            event.save()
             # Add a success message
             messages.success(request, f"Event {name} has been sent for approval.")
 
@@ -199,10 +207,12 @@ def create_event(request):
         form = EventForm()
 
     event_places = EventPlace.objects.all()
+    categires = Category.objects.all()
     context = {
         "title": "Create event page",
         "event_places": event_places,
-        "form": form
+        "form": form,
+        "categories": categires
     }
 
     return render(request, "create_event.html", context)
@@ -220,6 +230,9 @@ def approve_category(request, category_id):
         category.approved_by_mods = True
         category.accepted = Worker.objects.get(worker=request.user)
         category.save()
+
+        form = CategoryForm()
+        form.update_choices()
         # Add a success message
         messages.success(request, f"Category {category.name} has been successfully approved.")
     except Category.DoesNotExist:

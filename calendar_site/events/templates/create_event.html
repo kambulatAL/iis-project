@@ -66,6 +66,20 @@
                 </div>
 
                 <div class="form_class">
+                    <label for="categories">Categories:</label>
+                    {% for category in categories %}
+                        {% if category.accepted  %}
+                            {% if category.approved_by_mods %}
+                                <div class="category-checkbox">
+                                    <input type="checkbox" id="category_{{ category.id }}" name="categories" value="{{ category.id }}">
+                                    <label for="category_{{ category.id }}"> {{ category.name }}</label>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <div class="form_class">
                     <label for="photo">Event Photo:</label>
                         <div class="file_input">
                             <input type="file" id="photo" name="photo" class="file">

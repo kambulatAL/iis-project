@@ -76,6 +76,7 @@ header {
     border-radius: 5px;
 }
 
+
 /*Footer styles*/
 
 footer {
@@ -644,3 +645,12 @@ footer a {
     background-color: #e34a29;
 }
 
+
+.category-checkbox {
+    display: flex;
+    margin: auto;
+}
+
+.category-checkbox input {
+    width: 30px;
+}

@@ -22,8 +22,15 @@ class CategoryForm(forms.Form):
     subcategory = forms.ChoiceField(
         choices=[(None, 'None')] + [(category.name, category.name) for category in Category.objects.all()],
         required=False
-
     )
+
+    def __init__ (self, *args, **kwargs):
+        super(CategoryForm, self).__init__(*args, **kwargs)
+        self.fields['subcategory'].choices += [(category.name, category.name) for category in Category.objects.all()]
+
+    # Function that update category choices in the form after adding new category
+    def update_choices(self):
+        self.fields['subcategory'].choices = [(None, 'None')] + [(category.name, category.name) for category in Category.objects.all()]
 
 
 class EventForm(forms.Form):
@@ -42,3 +49,9 @@ class EventForm(forms.Form):
     )
 
     photo = forms.ImageField(required=False, label='Event photo')
+
+    # Categories that u get from checkboxes
+    categories = forms.ModelMultipleChoiceField(
+        queryset=Category.objects.all(),
+        widget=forms.CheckboxSelectMultiple()
+    )
