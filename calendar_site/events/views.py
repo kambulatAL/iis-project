@@ -1,9 +1,10 @@
 from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from events.models import RegisteredUser, EventPlace, Event, Worker, Category
-from .forms import LoginForm, RegisterForm, EventForm, CategoryForm
+from events.models import RegisteredUser, EventPlace, Event, Worker, Category, EventEstimation
+from .forms import LoginForm, RegisterForm, EventForm, CommentForm, CategoryForm
 from django.contrib import messages
+from datetime import datetime
 
 
 ############################################################################################### Admin functions
@@ -139,15 +140,66 @@ def join_user_event(request, event_id, username):
         return redirect("home_page")
 
 
-def show_event_page(request, event_id):
+def get_data_event_page(event_id, username, form):
     event = Event.objects.get(pk=event_id)
     reg_users_count = len(event.registered_people.all())
     created = str(event.created)
-    username = str(request.user.username)
-    return render(request, 'event_page.html',
-                  {"event": event, "enrolled_people": reg_users_count, "created": created, "username": username})
+    username = str(username)
+
+    event_end_date = event.end_date.strftime('%Y-%m-%d')
+    event_end_time = event.end_time.strftime('%H:%M:%S')
+    today = datetime.now().date().strftime("%Y-%m-%d")
+    today_time = datetime.today().time().strftime("%H:%M:%S")
+
+    all_event_comments = EventEstimation.objects.filter(event__pk=event_id)
+
+    leaved_comments = [(com.event.pk, com.user.username) for com in EventEstimation.objects.all()]
+    can_leave_comment = (event.pk, username) not in leaved_comments
+
+    allow_comments = (event_end_date == today and today_time > event_end_time) or event_end_date < today
+
+    context = {"event": event, "enrolled_people": reg_users_count,
+               "created": created, "username": username,
+               "allow_comments": allow_comments, "can_leave_comment": can_leave_comment,
+               "all_event_comments": all_event_comments, "form": form}
+    return context
 
 
+def show_event_page(request, event_id):
+    form = CommentForm()
+    context = get_data_event_page(event_id, request.user.username, form)
+    return render(request, 'event_page.html', context)
+
+
+@login_required
+def leave_comment(request, event_id, username):
+    event = Event.objects.get(pk=event_id)
+    user = RegisteredUser.objects.get(username=username)
+
+    if (event_id, username) in EventEstimation.objects.all():
+        return HttpResponse("You have already leaved a comment.")
+
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            print("Comment form is valid\n")
+            content = form.cleaned_data.get("content")
+            estimation = form.cleaned_data.get("estimation")
+
+            comment = EventEstimation(event=event, user=user, comment=content, estimation=estimation)
+            comment.save()
+            messages.success(request, f"Your comment was successfully saved.")
+            return redirect(f"/events/{event_id}/")
+        else:
+            print("Form is not valid")
+            print(form.errors)
+    else:
+        form = CommentForm()
+    context = get_data_event_page(event_id, request.user.username, form)
+    return render(request, "event_page.html", context)
+
+
+@login_required
 def list_enrolled_users(request, event_id):
     event = Event.objects.get(pk=event_id)
     reg_users = list(event.registered_people.all())
@@ -170,7 +222,7 @@ def create_event(request):
             ticket_price = form.cleaned_data.get("ticket_price")
             place = form.cleaned_data.get("place")
             photo = form.cleaned_data.get("photo")
-            
+
             # Add categories from checkboxes
             categories = form.cleaned_data.get("categories")
             # print it to console
@@ -194,7 +246,7 @@ def create_event(request):
             # Add categories from checkboxes
             for category in categories:
                 event.categories.add(Category.objects.get(name=category.name))
-                
+
             event.save()
             # Add a success message
             messages.success(request, f"Event {name} has been sent for approval.")

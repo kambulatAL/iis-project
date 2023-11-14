@@ -11,6 +11,7 @@ urlpatterns = [
 
     path('events/<int:event_id>/', views.show_event_page, name='event_page'),
     path('events/<int:event_id>/list_of_enrolled_people/', views.list_enrolled_users, name="enrolled_people"),
+    path('events/<int:event_id>/<str:username>/leave_comment/', views.leave_comment, name="leave_comment"),
 
     path('category/', views.create_category, name='new_category_page'),
 ]

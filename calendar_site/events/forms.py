@@ -49,9 +49,19 @@ class EventForm(forms.Form):
     )
 
     photo = forms.ImageField(required=False, label='Event photo')
-
     # Categories that u get from checkboxes
     categories = forms.ModelMultipleChoiceField(
         queryset=Category.objects.all(),
         widget=forms.CheckboxSelectMultiple()
     )
+
+
+class CommentForm(forms.Form):
+    content = forms.CharField(widget=forms.Textarea)
+    estimation = forms.ChoiceField(choices=[
+        (1, '1'),
+        (2, '2'),
+        (3, '3'),
+        (4, '4'),
+        (5, '5')
+    ], widget=forms.RadioSelect)

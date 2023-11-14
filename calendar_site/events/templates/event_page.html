@@ -63,6 +63,36 @@
         {% if username == created  %}
             <a href="{% url 'enrolled_people' event.pk %}">List enrolled people</a>
         {% endif %}
+
+        {% if allow_comments  %}
+            <h2>Comments</h2>
+            {% if user in event.registered_people.all and can_leave_comment%}
+                <form method="POST" action="{% url 'leave_comment' event.pk user.username %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+<!--                    <label for="content">Your comment:</label>-->
+<!--                    <textarea id="content" name="content" required></textarea><br>-->
+
+<!--                     <label>Estimation:</label>-->
+<!--                    {% for choice in form.estimation %}-->
+<!--                        <input type="radio" id="id_estimation_{{ forloop.counter }}"-->
+<!--                               name="estimation"-->
+<!--                               value="{{ choice.choice_value }}"-->
+<!--                               {% if choice.checked %} checked {% endif %} required>-->
+<!--                        <label for="id_estimation_{{ forloop.counter }}">{{ choice.choice_label }}</label>-->
+<!--                      {% endfor %}-->
+                    <br>
+                    <button type="submit">Leave comment</button>
+                </form>
+            {% endif %}
+
+            {% for comm in all_event_comments %}
+                <h4>{{comm.user.username}}</h4>
+                <p>{{comm.comment}}</p>
+                <h4>{{comm.estimation}}</h4>
+            {% endfor %}
+
+        {% endif %}
     {% endif %}
 
 </div>

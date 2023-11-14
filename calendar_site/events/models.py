@@ -1,6 +1,7 @@
 from django.db import models
 from django import forms
 from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
 
 # TODO: Если что, название этих моделей в Датабазе начинается с events_ 
 # TODO: то есть, есть модель Worker, а в базе она называется events_worker
@@ -56,7 +57,7 @@ class EventPlace(models.Model):
     house_number = models.CharField(max_length=10, null=True)
     place_name = models.CharField(max_length=255, null=True)
     description = models.TextField(null=True)
-    photo = models.ImageField(upload_to=f"Photos/places/{place_id}/%y/%m/%d/", null=True)
+    photo = models.ImageField(upload_to=f"Photos/places/%y/%m/%d/", null=True)
     # foreign key represents the "Navrhl" relation from the ERD
     created = models.ForeignKey(RegisteredUser,
                                 on_delete=models.CASCADE,
@@ -86,10 +87,10 @@ class Event(models.Model):
     name = models.CharField(max_length=255, default='Event name')
     event_id = models.AutoField(primary_key=True)
     start_date = models.DateField(null=False, default='2021-01-01')
-    end_date = models.DateField(null=True)
+    end_date = models.DateField(null=False, default='2021-01-01')
 
     start_time = models.TimeField(null=False, default='12:30')
-    end_time = models.TimeField(null=True)
+    end_time = models.TimeField(null=False, default='12:30')
 
     capacity = models.IntegerField()
     ticket_price = models.IntegerField()
@@ -128,7 +129,8 @@ class EventEstimation(models.Model):
         (4, '4'),
         (5, '5')
     ])
-    comment = models.TextField(null=True)
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         # create a primary key pair
