@@ -1,0 +1,69 @@
+{%extends 'base.html'%}
+{% load static %}
+
+{% block header_block %}
+<header>
+    <a href="{% url 'home_page' %}" class="logo_header">Calendar</a>
+    <div class="nav">
+        {% if user.is_authenticated %}
+        {% if user.is_moderator or user.is_admin %}
+        <a href="{% url 'admin_page' %}">Admin Panel</a>
+        {% endif %}
+        <a href="{% url 'home_page' %}">Home</a>
+        <a href="#">Settings</a>
+        <a href="{% url 'logout_page' %}">Log Out</a>
+        {% else %}
+        <a href="{% url 'login_page' %}">Login</a>
+        <a href="{% url 'register_page' %}">Sign Up</a>
+        {% endif %}
+    </div>
+</header>
+{% endblock header_block %}
+
+
+{% block category_block %}
+<div class="category">
+    <h3>My Calendar</h3>
+</div>
+{% endblock category_block %}
+
+{% block content_block %}
+
+<div class="main_container">
+    <h3>Registered</h3>
+
+    <!-- Show the events that I enrolled-->
+    {% for event in events %}
+        {% if event.approved_by_mods %}
+            {% if user in event.registered_people.all %}
+                <div class="events_element">
+                    {% if event.photo %}
+                    <div class="event-photo">
+                        <img src="{{ event.photo.url }}" alt="Event Photo">
+                    </div>
+                    {% else %}
+                        <p>No photo available</p>
+                    {% endif %}
+                    <div class="event-details">
+                        <h4>Event: <a href="{% url 'event_page' event.pk %}">{{ event.name }}</a></h4>
+                        <p>Date: {{ event.start_date }} - {{ event.end_date }}</p>
+                        <p>Location: {{ event.event_place.city }} - {{event.event_place.street}}</p>
+                        <p>Capacity: {{ event.capacity }}</p>
+                    </div>
+                    <div class="event-details-more">
+                        <p>Cost: {{ event.ticket_price }} eur</p>
+                        <p>Start: {{ event.start_time }} - {{ event.end_time }}</p>
+                        <p>Category:
+                            {% for category in event.categories.all %}
+                            | {{ category.name }}
+                            {% endfor %}
+                        </p>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+    
+</div>
+{% endblock content_block %}

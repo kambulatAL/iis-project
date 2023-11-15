@@ -31,16 +31,23 @@ header {
 }
 
 .messages {
-    list-style: none;
-    padding: 10px;
     width: 70%;
     display: block;
-    background-color: #86b049;
     color: black;
     font-weight: 700;
     border: 1px solid #ccc;
     border-radius: 5px;
     margin: 20px auto;
+}
+
+.messages .alert-success {
+    padding: 20px;
+    background-color: #86b049;
+}
+
+.messages .alert-warning {
+    padding: 20px;
+    background-color: #f0ab9c;
 }
 
 .logo_header {

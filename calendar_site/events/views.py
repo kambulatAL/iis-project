@@ -11,16 +11,26 @@ from datetime import datetime
 
 # function that delete user from database by username
 def delete_user(request, username):
-    # check if user is admin
+    # get the user that we want to delete
+    try: 
+        user_to_delete = RegisteredUser.objects.get(username=username)
+    except:
+        return HttpResponse("User does not exist")
+    
+    # Check if user is authenticated and has admin rights
     if request.user.is_authenticated and request.user.is_admin:
-        try:
-            user_to_delete = RegisteredUser.objects.get(username=username)
+        # Check if the user that we want to delete is admin
+        if user_to_delete.is_admin:
+            messages.warning(request, "You cannot delete another admin.")
+        elif user_to_delete == request.user:
+             messages.warning(request, "You cannot delete yourself.")
+        else: 
             user_to_delete.delete()
-            # Add a success message
             messages.success(request, f"User {username} has been successfully deleted.")
-        except RegisteredUser.DoesNotExist:
-            return HttpResponse("User does not exist")
-        return redirect("list_users_page")
+    else:
+        messages.warning(request, "You do not have permission to delete users.")
+
+    return redirect("list_users_page")
 
 
 # function that require moderator rights
@@ -62,6 +72,16 @@ def index(request):
     return render(request, "index.html", {"title": "Home page", "events": events, "categories": categories})
 
 
+@login_required
+def my_calendar(request):
+    context = {
+        "title": "My calendar page",
+        "events": Event.objects.all(),
+        "categories": Category.objects.all(),
+        "places": EventPlace.objects.all()
+    }
+    return render(request, "my_calendar.html", context)
+
 @moderator_required
 def list_places(request):
     places = EventPlace.objects.all()
@@ -88,7 +108,7 @@ def list_categories(request):
                   {"title": "List of categories", "categories": categories})
 
 
-#######################################################################################
+####################################################################################### Create functions
 @login_required
 def create_category(request):
     if request.method == 'POST':
@@ -139,7 +159,7 @@ def join_user_event(request, event_id, username):
             return HttpResponse("User does not exist")
         return redirect("home_page")
 
-
+# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?
 def get_data_event_page(event_id, username, form):
     event = Event.objects.get(pk=event_id)
     reg_users_count = len(event.registered_people.all())
@@ -165,6 +185,7 @@ def get_data_event_page(event_id, username, form):
     return context
 
 
+# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?
 def show_event_page(request, event_id):
     form = CommentForm()
     context = get_data_event_page(event_id, request.user.username, form)
@@ -335,7 +356,7 @@ def reject_event(request, event_id):
     return redirect("list_events_page")
 
 
-#######################################################################################
+####################################################################################### Authentication functions
 def logout_view(request):
     logout(request)
     return redirect("home_page")

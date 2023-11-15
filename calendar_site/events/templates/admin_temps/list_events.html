@@ -5,7 +5,13 @@
 {% if messages %}
 <div class="messages">
     {% for message in messages %}
-        {% if message.tags %} "{{ message.tags }}"{% endif %}>{{ message }}
+        {% if message.tags %}
+            <div class="{% if message.tags == 'success' %} alert-success
+                        {% elif message.tags == 'warning' %} alert-warning
+                        {% endif %}">
+                {{ message }}
+            </div>
+        {% endif %}
     {% endfor %}
 </div>
 {% endif %}

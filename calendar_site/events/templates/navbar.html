@@ -1,0 +1,21 @@
+<!-- navbar.html
+    will implement later
+-->
+{% load static %}
+
+<header>
+    <a href="{% url 'home_page' %}" class="logo_header">Calendar</a>
+    <div class="nav">
+        {% if user.is_authenticated %}
+            {% if user.is_moderator or user.is_admin %}
+                <a href="{% url 'admin_page' %}">Admin Panel</a>
+            {% endif %}
+            <a href="{% url 'my_calendar_page' %}">My Calendar</a>
+            <a href="#">Settings</a>
+            <a href="{% url 'logout_page' %}">Log Out</a>
+        {% else %}
+            <a href="{% url 'login_page' %}">Login</a>
+            <a href="{% url 'register_page' %}">Sign Up</a>
+        {% endif %}
+    </div>
+</header>
