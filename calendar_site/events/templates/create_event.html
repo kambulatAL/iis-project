@@ -50,7 +50,11 @@
                     <label for="place">Event Place:</label>
                     <select id="place" name="place">
                         {% for place in event_places %}
-                            <option value="{{ place.place_id }}" selected="selected">{{ place.city }} - {{ place.street }}</option>
+                            {% if place.accepted %}
+                            {% if place.approved_by_mods %}
+                            <option value="{{ place.place_id }}" selected="selected">{{ place.city }} - {{ place.street }}: {{ place.place_name }}</option>
+                            {% endif %}
+                            {% endif %}
                         {% endfor %}
                     </select>
                 </div>

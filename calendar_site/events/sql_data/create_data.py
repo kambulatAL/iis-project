@@ -66,27 +66,22 @@ Category.objects.create(
 EventPlace.objects.create(
     city='Prague',
     street='Vodickova',
-    house_number='12',
     place_name='Kino',
-    description='A nahuya tak mnogo fields v modeli?',
-    photo='',
     # Это нам точно надо??????????????????????
     created=RegisteredUser.objects.get(username='xblanco00'),
-    accepted=Worker.objects.get(worker=RegisteredUser.objects.get(username='xassat00'))
+    accepted=Worker.objects.get(worker=RegisteredUser.objects.get(username='xassat00')),
+    approved_by_mods=True
 )
 
 # Create event places
 EventPlace.objects.create(
     city='Brno',
     street='Skacelova',
-    house_number='37',
     place_name='Kebab house',
-    description='Kebab party',
-    photo='',
-
     # Это нам точно надо??????????????????????
     created=RegisteredUser.objects.get(username='user_login'),
-    accepted=Worker.objects.get(worker=RegisteredUser.objects.get(username='xassat00'))
+    accepted=Worker.objects.get(worker=RegisteredUser.objects.get(username='xassat00')),
+    approved_by_mods=True
 )
 
 # Create event

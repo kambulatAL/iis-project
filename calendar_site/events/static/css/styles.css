@@ -349,6 +349,19 @@ footer a {
     font-size: 17px;
 }
 
+.event_aprovals .consideration {
+    font-weight: 700;
+    font-size: 17px;
+    color: #D9D9D9;
+}
+
+.my-calendar {
+    padding: 10px;
+    font-weight: 700;
+    border-radius: 10px;
+    background-color: #333;
+}
+
 
 /* MAIN BUTTON STYLES   */
 .button_approve {
@@ -558,15 +571,42 @@ footer a {
     margin-top: 0;
 }
 
-.event-page-details h4 {
+.event_page_information h4 {
     font-weight: bold;
-    /* Set line-height equal to the container height */
     line-height: 35px;
-    /*transform: translate(-50%, -50%);*/
     text-align: right;
     padding-right: 55px;
+}
+.event_page_information h3 {
+    font-weight: bold;
+    line-height: 35px;
+    text-align: center;
+    font-size: 30px;
+}
 
+.event_page_information p {
+    font-size: 24px;
+    margin-bottom: 30px;
+}
 
+.enrolled_class_button {
+    margin: 30px 10px;
+}
+
+.enrolled_class_button a{
+    font-size: 20px;
+    font-weight: 700;
+    text-align: left;
+    padding: 20px;
+    background-color: #272932;
+    color:#ccc;
+    border-radius: 30px;
+    transition: background-color 0.2s;
+}
+
+.enrolled_class_button a:hover {
+    background-color: #ba7e7e;
+    color: white;
 }
 
 .event-page-details img {
@@ -580,6 +620,13 @@ footer a {
     text-align: center;
 }
 
+
+.event_time {
+    border-radius: 20px;
+    padding: 10px;
+    background-color: #333;
+    color: #86b049;
+}
 
 .text-right-align {
     text-align: right;
@@ -661,3 +708,81 @@ footer a {
 .category-checkbox input {
     width: 30px;
 }
+
+.event_page_description {
+    padding: 20px;
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.user_comments {
+    background-color: #969696;
+    padding: 10px;
+    margin: 10px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.user_comments .username {
+    border-radius: 40px;
+    padding: 20px 10px;
+    display: inline-block;
+    font-size: 20px;
+    font-weight: 700;
+    color: #272932;
+    background-color: #B6C2D9;
+}
+
+.user_comments .comment {
+    background-color: #333;
+    border-radius: 30px;
+    color:#D9D9D9;
+    padding: 10px;
+    margin: 10px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* Maybe will change later*//* Maybe will change later*//* Maybe will change later*/
+.user_comments .estimation {
+    background-color: #333;
+    border-radius: 30px;
+    color:#D9D9D9;
+    padding: 10px;
+    margin: 10px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+
+
+/* Maybe will change later*//* Maybe will change later*//* Maybe will change later*/
+.form_estimation {
+    position: relative;
+    padding-left: 30px; 
+    cursor: pointer;
+    line-height: 20px;
+    font-size: 16px;
+ 
+}
+
+.form_estimation .points {
+    margin: 25px;
+    font-size: 27px;
+    text-align: center;
+    color:#000000;
+}
+
+input[type="radio"] {
+    transform: scale(1.5);
+    width: 20px; 
+    height: 20px; 
+    margin-right: 5px; 
+    outline: none;
+}
+
+input[type="radio"]:checked {
+    background-color: #3498db;
+}
+/*^^^ Maybe will change later*//* Maybe will change later*//* Maybe will change later*/

@@ -3,10 +3,48 @@
 
 
 {% block admin_content %}
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+        {% if message.tags %}
+            <div class="{% if message.tags == 'success' %} alert-success
+                        {% elif message.tags == 'warning' %} alert-warning
+                        {% endif %}">
+                {{ message }}
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
+{% endif %}
+
         <h3>Places</h3>
             <ul>
                 {% for place in places %}
-                    <li>{{ place.city }}</li>
+                    <li>
+                        <div class="category-info">
+                            <strong>Place Name:</strong> {{ place.place_name }}<br>
+                            <strong>Place City:</strong> {{ place.city }}<br>
+                            <strong>Place Street:</strong> {{ place.street }}<br>
+                        </div>
+                        <div class="event_aprovals ">
+                        {% if place.accepted %}
+                            {% if place.approved_by_mods %}
+                                <div class="approved">
+                                    Approved by mod {{place.accepted.worker}}
+                                </div>
+                            {% else %}
+                                <div class="rejected">
+                                    Rejected by mod {{place.accepted.worker}}
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="button_column">
+                                <a href="{% url 'approve_place_page' place.place_id %}" class="button_approve">Approve</a>
+                                <a href="{% url 'reject_place_page' place.place_id %}" class="button_reject">Reject</a>
+                            </div>
+                        {% endif %}
+                        </div>
+                    </li>
                 {% endfor %}
             </ul>
 {% endblock admin_content %}

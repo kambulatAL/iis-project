@@ -33,6 +33,12 @@ class CategoryForm(forms.Form):
         self.fields['subcategory'].choices = [(None, 'None')] + [(category.name, category.name) for category in Category.objects.all()]
 
 
+class PlaceForm(forms.Form):
+    city = forms.CharField()
+    street = forms.CharField()
+    place_name = forms.CharField()
+
+
 class EventForm(forms.Form):
     name = forms.CharField()
     start_date = forms.DateField()

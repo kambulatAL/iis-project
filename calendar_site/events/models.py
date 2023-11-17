@@ -54,18 +54,16 @@ class EventPlace(models.Model):
     place_id = models.AutoField(primary_key=True)
     city = models.CharField(max_length=100)
     street = models.CharField(max_length=200)
-    house_number = models.CharField(max_length=10, null=True)
     place_name = models.CharField(max_length=255, null=True)
-    description = models.TextField(null=True)
-    photo = models.ImageField(upload_to=f"Photos/places/%y/%m/%d/", null=True)
     # foreign key represents the "Navrhl" relation from the ERD
     created = models.ForeignKey(RegisteredUser,
                                 on_delete=models.CASCADE,
-                                related_name='event_place_created')  # how to make creation ???? - in the moment of creation by user?
+                                related_name='event_place_created')  
     # foreign key represents the "Schvalil" relation from the ERD
     accepted = models.ForeignKey(Worker, on_delete=models.CASCADE, null=True,
                                  blank=True,
-                                 related_name='event_place_accepted')  # how to make accepting ???? after the moment of creation by user?
+                                 related_name='event_place_accepted')  
+    approved_by_mods = models.BooleanField(default=False)
 
 
 # represents "Kategorie" from the ER diagram

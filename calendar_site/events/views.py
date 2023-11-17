@@ -2,7 +2,7 @@ from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from events.models import RegisteredUser, EventPlace, Event, Worker, Category, EventEstimation
-from .forms import LoginForm, RegisterForm, EventForm, CommentForm, CategoryForm
+from .forms import LoginForm, RegisterForm, EventForm, CommentForm, CategoryForm, PlaceForm
 from django.contrib import messages
 from datetime import datetime
 
@@ -74,11 +74,15 @@ def index(request):
 
 @login_required
 def my_calendar(request):
+    today_date = datetime.now()
+    today_time = datetime.now().time()
     context = {
         "title": "My calendar page",
         "events": Event.objects.all(),
         "categories": Category.objects.all(),
-        "places": EventPlace.objects.all()
+        "places": EventPlace.objects.all(),
+        "current_date": today_date.strftime("%Y-%m-%d"),
+        "current_time": today_time.strftime("%H:%M:%S")
     }
     return render(request, "my_calendar.html", context)
 
@@ -109,6 +113,39 @@ def list_categories(request):
 
 
 ####################################################################################### Create functions
+
+@login_required
+def create_place(request):
+    if request.method == 'POST':
+        form = PlaceForm(request.POST)
+        if form.is_valid():
+            city = form.cleaned_data.get("city")
+            street = form.cleaned_data.get("street")
+            place_name = form.cleaned_data.get("place_name")
+
+            # check if place is unique
+            if EventPlace.objects.filter(city=city, street=street).exists():
+                return HttpResponse("Place with this name already exists")
+
+            event_place = EventPlace(city=city, street=street, place_name=place_name, created=request.user)
+            event_place.save()
+            # Add a success message
+            messages.success(request, f"Place {city} {street} has been successfully created. ")
+            return redirect("home_page")
+        else:
+            print("Form is not valid")
+            print(form.errors)
+    else:
+        form = PlaceForm()
+    
+    context = {
+        "title": "Create place page",
+        "form": form
+    }
+
+    return render(request, "create_place.html", context)
+
+
 @login_required
 def create_category(request):
     if request.method == 'POST':
@@ -185,10 +222,14 @@ def get_data_event_page(event_id, username, form):
     return context
 
 
-# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?
 def show_event_page(request, event_id):
     form = CommentForm()
     context = get_data_event_page(event_id, request.user.username, form)
+
+    # Check if event is approved by moderator
+    if not context["event"].approved_by_mods:
+        return HttpResponse("Event is not approved by moderator")
+
     return render(request, 'event_page.html', context)
 
 
@@ -295,6 +336,31 @@ def create_event(request):
 def admin_view(request):
     return render(request, "admin_temps/admin_page.html", {"title": "Admin page"})
 
+@moderator_required
+def approve_place(request, place_id):
+    try:
+        place = EventPlace.objects.get(place_id=place_id)
+        place.approved_by_mods = True
+        place.accepted = Worker.objects.get(worker=request.user)
+        place.save()
+        # Add a success message
+        messages.success(request, f"Place {place.place_name} has been successfully approved.")
+    except EventPlace.DoesNotExist:
+        return HttpResponse("Place does not exist")
+    return redirect("list_places_page")
+
+@moderator_required
+def reject_place(request, place_id):
+    try:
+        place = EventPlace.objects.get(place_id=place_id)
+        place.approved_by_mods = False
+        place.accepted = Worker.objects.get(worker=request.user)
+        place.save()
+        # Add a success message
+        messages.success(request, f"Place {place.place_name} has been successfully rejected.")
+    except EventPlace.DoesNotExist:
+        return HttpResponse("Place does not exist")
+    return redirect("list_places_page")
 
 @moderator_required
 def approve_category(request, category_id):

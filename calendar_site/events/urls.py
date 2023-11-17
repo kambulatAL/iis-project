@@ -16,6 +16,9 @@ urlpatterns = [
     
     # My calendar page
     path('my_calendar/', views.my_calendar, name='my_calendar_page'),
+
+    # New place page
+    path('places/', views.create_place, name='new_place_page'),
 ]
 
 # user authentication paths
@@ -39,6 +42,9 @@ urlpatterns += [
          name='approve_category_page'),
     path('admin_page/categories/reject_category/<int:category_id>/', views.reject_category,
          name='reject_category_page'),
+
+    path('admin_page/places/approve_place/<int:place_id>/', views.approve_place, name='approve_place_page'),
+    path('admin_page/places/reject_place/<int:place_id>/', views.reject_place, name='reject_place_page'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

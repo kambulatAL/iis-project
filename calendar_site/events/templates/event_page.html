@@ -23,9 +23,8 @@
 
 
 {% block content_block %}
-<!--<div class="events_element">-->
 <div class="event-page-details">
-    <h2>{{event.name}}</h2>
+    <h2>Event: {{event.name}}</h2>
 
     <h3>Created by: {{event.created}}</h3>
     <h3>Approved by: {{event.accepted.worker.username}}</h3>
@@ -41,13 +40,16 @@
         {% endfor %}
     </div>
 
-    <h4>Location:   {{ event.event_place.city }} - {{event.event_place.street}}</h4>
-    <h4>Date:       {{ event.start_date }} - {{ event.end_date }}</h4>
-    <h4>Start:      {{ event.start_time }} - {{ event.end_time }}</h4>
-    <h4>Capacity:   {{ event.capacity }}</h4>
-    <h4>Enrolled People: {{ enrolled_people }}</h4>
-    <h4>Cost:       {{ event.ticket_price }} eur</h4>
-    <p>{{ event.description }}</p>
+    <div class="event_page_information">
+        <h4>Location:   {{ event.event_place.city }} - {{event.event_place.street}}</h4>
+        <h4>Date:       {{ event.start_date }} - {{ event.end_date }}</h4>
+        <h4>Start:      {{ event.start_time }} - {{ event.end_time }}</h4>
+        <h4>Capacity:   {{ event.capacity }}</h4>
+        <h4>Enrolled People: {{ enrolled_people }}</h4>
+        <h4>Cost:       {{ event.ticket_price }} eur</h4>
+        <h3>Description:</h3>
+        <p>{{ event.description }}</p>
+    </div>
 
     {% if user.is_authenticated %}
         {% if not user in event.registered_people.all %}
@@ -61,40 +63,58 @@
         {% endif %}
 
         {% if username == created  %}
+        <div class="enrolled_class_button">
             <a href="{% url 'enrolled_people' event.pk %}">List enrolled people</a>
+        </div>
         {% endif %}
+        
 
-        {% if allow_comments  %}
+        <div class="comment-sections">
+            {% if allow_comments  %}
             <h2>Comments</h2>
-            {% if user in event.registered_people.all and can_leave_comment%}
-                <form method="POST" action="{% url 'leave_comment' event.pk user.username %}" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-<!--                    <label for="content">Your comment:</label>-->
-<!--                    <textarea id="content" name="content" required></textarea><br>-->
+                {% if user in event.registered_people.all and can_leave_comment%}
+                    <form method="POST" action="{% url 'leave_comment' event.pk user.username %}" enctype="multipart/form-data">
+                        {% csrf_token %}
 
-<!--                     <label>Estimation:</label>-->
-<!--                    {% for choice in form.estimation %}-->
-<!--                        <input type="radio" id="id_estimation_{{ forloop.counter }}"-->
-<!--                               name="estimation"-->
-<!--                               value="{{ choice.choice_value }}"-->
-<!--                               {% if choice.checked %} checked {% endif %} required>-->
-<!--                        <label for="id_estimation_{{ forloop.counter }}">{{ choice.choice_label }}</label>-->
-<!--                      {% endfor %}-->
-                    <br>
-                    <button type="submit">Leave comment</button>
-                </form>
+                        <!-- Render content field manually -->
+                        <div class="form_class content">
+                            <h2> Content: </h2>
+                            {{ form.content }}
+                        </div>
+                        <!-- Render estimation field manually -->
+                        <div class="form_estimation">
+                            <h2> Estimation: </h2>
+                            {% for radio in form.estimation %}
+                            <div class="points">
+                                {{ radio.tag }} 
+                                <label for="{{ radio.id_for_label }}"> {{ radio.choice_label }} &#9733 </label>
+                            </div>
+                                
+                            {% endfor %}
+                        </div>
+                    
+                        <div class="form_class">
+                            <button class="submit_button" type="submit">Leave comment</button>
+                        </div>
+                    </form>
+                {% endif %}
+                <br><br><br>
+                {% for comm in all_event_comments %}
+                <div class="user_comments">
+                    <div class="username">
+                        User: {{ comm.user.username }}
+                    </div>
+                    <div class="comment">
+                        User commentary: {{ comm.comment }}
+                    </div>
+                    <div class="estimation">
+                        Estimation: {{ comm.estimation }} / 5
+                    </div>
+                </div>
+                {% endfor %}
             {% endif %}
-
-            {% for comm in all_event_comments %}
-                <h4>{{comm.user.username}}</h4>
-                <p>{{comm.comment}}</p>
-                <h4>{{comm.estimation}}</h4>
-            {% endfor %}
-
-        {% endif %}
+        </div>
     {% endif %}
-
 </div>
 
 {% endblock content_block %}

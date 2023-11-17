@@ -59,11 +59,74 @@
                             {% endfor %}
                         </p>
                     </div>
+                    <div>
+                        {% if current_date > event.end_date|date:'Y-m-d' %}
+                            <p class="event_time"> Event is ended</p>
+                        {% elif current_date == event.end_date|date:'Y-m-d' %}
+                            {% if current_time > event.end_time|time:'H:i:s' %}
+                                <p class="event_time"> Event is ended</p>
+                            {% else %}
+                                <p class="event_time"> Event is ongoing</p>
+                            {% endif %}
+                        {% else %}
+                            <p class="event_time"> Event is upcoming</p>
+                        {% endif %}
+                        
+                    </div>
                 </div>
             {% endif %}
         {% endif %}
     {% endfor %}
 
+    <h3> My Created Events </h3>
+    {% for event in events %}
+        {% if event.created == user %}
+            <div class="events_element">
+                {% if event.photo %}
+                <div class="event-photo">
+                    <img src="{{ event.photo.url }}" alt="Event Photo">
+                </div>
+                {% else %}
+                    <p>No photo available</p>
+                {% endif %}
+                <div class="event-details">
+                    <h4>Event: <a href="{% url 'event_page' event.pk %}">{{ event.name }}</a></h4>
+                    <p>Date: {{ event.start_date }} - {{ event.end_date }}</p>
+                    <p>Location: {{ event.event_place.city }} - {{event.event_place.street}}</p>
+                    <p>Capacity: {{ event.capacity }}</p>
+                </div>
+                <div class="event-details-more">
+                    <p>Cost: {{ event.ticket_price }} eur</p>
+                    <p>Start: {{ event.start_time }} - {{ event.end_time }}</p>
+                    <p>Category:
+                        {% for category in event.categories.all %}
+                        | {{ category.name }}
+                        {% endfor %}
+                    </p>
+                </div>
+                <div class="event_aprovals">
+                    {% if event.accepted %}
+                    {% if event.approved_by_mods %}
+                        <div class="my-calendar approved">
+                            Approved by mod {{event.accepted.worker}}
+                        </div>
+                    {% else %}
+                        <div class="my-calendar rejected">
+                            Rejected by mod {{event.accepted.worker}}
+                        </div>
+                    {% endif %}
+                    <!-- else it means it is on stage of approving-->
+                    {% else %}
+                        <div class="my-calendar consideration">
+                            Under consideration
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+    
+    
     
 </div>
 {% endblock content_block %}
