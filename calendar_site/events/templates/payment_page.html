@@ -1,0 +1,50 @@
+{%extends 'base.html'%}
+{% load static %}
+
+
+{% block header_block %}
+    <header>
+        <a href="{% url 'home_page' %}" class="logo_header">Calendar</a>
+            <div class="nav"> 
+                {% if user.is_moderator or user.is_admin %}
+                <a href="{% url 'admin_page' %}">Admin Panel</a>
+                {% endif %}
+                <a href="{% url 'home_page' %}">Home</a>
+                <a href="{% url 'my_calendar_page' %}">My Calendar</a>
+                <a href="#">Settings</a>
+                <a href="{% url 'logout_page' %}">Log Out</a>
+        </div>
+    </header>
+{% endblock header_block %}
+
+
+
+{% block content_block %} 
+    <div class="create_container">
+        <h2>Make payment</h2>
+        <div class="create_container_fill">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %} 
+                <div class="form_class">
+                    <label for="eventname">Name of the Event:</label>
+                    <input type="text" id="eventname" name="evname" value="{{ eventname }}" readonly>
+
+                    <label for="userlogin">Login:</label>
+                    <input type="text" id="userlogin" name="username" value="{{ username }}" readonly>
+
+                    <label for="user_firstname">First name:</label>
+                    <input type="text" id="user_firstname" name="fname" value="{{ user_firstname }}" readonly>
+
+                    <label for="user_lastname">Last name:</label>
+                    <input type="text" id="user_lastname" name="lname" value="{{ user_lastname }}" readonly>
+
+                    <label for="ticket_price">Ticket price:</label>
+                    <input type="text" id="ticket_price" name="tprice" value="{{ price }}" readonly>
+                </div>
+                <div class="form_class">
+                    <button class="submit_button" type="submit">Pay & join the event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock content_block %}

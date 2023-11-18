@@ -9,11 +9,13 @@ urlpatterns = [
     path('events/', views.create_event, name='new_event_page'),
     path('events/join_user_event/<int:event_id>/<str:username>/', views.join_user_event, name='event_join_user_page'),
     path('events/<int:event_id>/', views.show_event_page, name='event_page'),
+    path('events/category/<int:cat_id>', views.filter_by_category, name='category_ev_filter'),
+    path('events/payment/<int:event_id>/<str:username>/', views.make_payment, name='payment_page'),
     path('events/<int:event_id>/list_of_enrolled_people/', views.list_enrolled_users, name="enrolled_people"),
     path('events/<int:event_id>/<str:username>/leave_comment/', views.leave_comment, name="leave_comment"),
 
     path('category/', views.create_category, name='new_category_page'),
-    
+
     # My calendar page
     path('my_calendar/', views.my_calendar, name='my_calendar_page'),
 

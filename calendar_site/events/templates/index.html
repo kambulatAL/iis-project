@@ -36,7 +36,7 @@
     {% endfor %}
 </div>
 {% endif %}
-<!-- Здесь будет весь контент будущий -->
+
 {% if user.is_authenticated %}
 <div class="add_category_button">
     <a href="{% url 'new_category_page' %}">Add category</a>
@@ -51,7 +51,7 @@
             {% if category.accepted %}
             {% if category.approved_by_mods %}
             <li class="category_element">
-                <a href="#">{{ category.name }}</a>
+                <a href="{% url 'category_ev_filter' category.pk %}">{{ category.name }}</a>
             </li>
             {% endif %}
             {% endif %}
@@ -121,9 +121,15 @@
         <!-- If user is logged in, he can see the buttons -->
         {% if user.is_authenticated %}
             {% if not user in event.registered_people.all %}
-            <div class="event-button">
-                <a href="{% url 'event_join_user_page' event.pk user.username %}">Join</a>
-            </div>
+                {% if event.ticket_price == 0%}
+                    <div class="event-button">
+                        <a href="{% url 'event_join_user_page' event.pk user.username %}">Join</a>
+                    </div>
+                {% else  %}
+                        <div class="event-button">
+                        <a href="{% url 'payment_page' event.pk user.username %}">Pay&nbsp;{{event.ticket_price}}&nbsp;euro&nbsp;to&nbsp;join</a>
+                    </div>
+                {% endif %}
             {%else%}
             <div class="event-button">
                 <a href="#">Registered</a>

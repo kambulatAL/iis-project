@@ -144,8 +144,7 @@ class TicketPayment(models.Model):
     creation_date = models.DateField(auto_now_add=True)
     creation_time = models.TimeField(auto_now_add=True)
     ticket_price = models.IntegerField()
-    accepted = models.ForeignKey(RegisteredUser, on_delete=models.RESTRICT, null=True,
-                                 blank=True)  # event creator accepts the payment only after confirmation
+
 
     class Meta:
         # create a primary key pair

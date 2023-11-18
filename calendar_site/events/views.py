@@ -1,8 +1,8 @@
 from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from events.models import RegisteredUser, EventPlace, Event, Worker, Category, EventEstimation
-from .forms import LoginForm, RegisterForm, EventForm, CommentForm, CategoryForm, PlaceForm
+from events.models import RegisteredUser, EventPlace, Event, Worker, Category, EventEstimation, TicketPayment
+from .forms import LoginForm, RegisterForm, EventForm, CommentForm, CategoryForm, PlaceForm, PaymentForm
 from django.contrib import messages
 from datetime import datetime
 
@@ -12,19 +12,19 @@ from datetime import datetime
 # function that delete user from database by username
 def delete_user(request, username):
     # get the user that we want to delete
-    try: 
+    try:
         user_to_delete = RegisteredUser.objects.get(username=username)
     except:
         return HttpResponse("User does not exist")
-    
+
     # Check if user is authenticated and has admin rights
     if request.user.is_authenticated and request.user.is_admin:
         # Check if the user that we want to delete is admin
         if user_to_delete.is_admin:
             messages.warning(request, "You cannot delete another admin.")
         elif user_to_delete == request.user:
-             messages.warning(request, "You cannot delete yourself.")
-        else: 
+            messages.warning(request, "You cannot delete yourself.")
+        else:
             user_to_delete.delete()
             messages.success(request, f"User {username} has been successfully deleted.")
     else:
@@ -86,6 +86,7 @@ def my_calendar(request):
     }
     return render(request, "my_calendar.html", context)
 
+
 @moderator_required
 def list_places(request):
     places = EventPlace.objects.all()
@@ -130,14 +131,14 @@ def create_place(request):
             event_place = EventPlace(city=city, street=street, place_name=place_name, created=request.user)
             event_place.save()
             # Add a success message
-            messages.success(request, f"Place {city} {street} has been successfully created. ")
+            messages.success(request, f"Place {city} {street} has been successfully sent for approval. ")
             return redirect("home_page")
         else:
             print("Form is not valid")
             print(form.errors)
     else:
         form = PlaceForm()
-    
+
     context = {
         "title": "Create place page",
         "form": form
@@ -166,7 +167,7 @@ def create_category(request):
             else:
                 return HttpResponse("Something went wrong during category creation")
             # Add a success message
-            messages.success(request, f"Category {name} has been successfully created. ")
+            messages.success(request, f"Category {name} has been successfully sent for approval. ")
             return redirect("home_page")
         else:
             print("Form is not valid")
@@ -196,6 +197,7 @@ def join_user_event(request, event_id, username):
             return HttpResponse("User does not exist")
         return redirect("home_page")
 
+
 # Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?
 def get_data_event_page(event_id, username, form):
     event = Event.objects.get(pk=event_id)
@@ -211,7 +213,7 @@ def get_data_event_page(event_id, username, form):
     all_event_comments = EventEstimation.objects.filter(event__pk=event_id)
 
     leaved_comments = [(com.event.pk, com.user.username) for com in EventEstimation.objects.all()]
-    can_leave_comment = (event.pk, username) not in leaved_comments
+    can_leave_comment = (event.pk, username) not in leaved_comments and username != event.created.username
 
     allow_comments = (event_end_date == today and today_time > event_end_time) or event_end_date < today
 
@@ -231,6 +233,62 @@ def show_event_page(request, event_id):
         return HttpResponse("Event is not approved by moderator")
 
     return render(request, 'event_page.html', context)
+
+
+def filter_by_category(request, cat_id):
+    events: Event = Event.objects.all()
+    categories = Category.objects.all()
+
+    selected_cat: Category = Category.objects.get(pk=cat_id)
+    all_cats = selected_cat.name == "All categories"
+    print(cat_id)
+    subcats = []
+
+    while selected_cat is not None:
+        subcats.append(selected_cat.pk)
+        selected_cat = selected_cat.subcategory
+
+    filtered_events = []
+    for event in events:
+        [filtered_events.append(event) for cat in event.categories.all() if cat.pk in subcats]
+
+    if all_cats: filtered_events = events
+    return render(request, "index.html", {"title": "Home page", "events": filtered_events, "categories": categories})
+
+
+@login_required
+def make_payment(request, event_id, username):
+    event: Event = Event.objects.get(pk=event_id)
+    user: RegisteredUser = RegisteredUser.objects.get(pk=username)
+    ticket_price = event.ticket_price
+    if request.method == 'POST':
+        form = PaymentForm(request.POST)
+        if form.is_valid():
+            print("Form is valid")
+            payment = TicketPayment(event=event, user=user, ticket_price=ticket_price)
+            payment.save()
+            event.registered_people.add(user)
+            # Add a success message
+            messages.success(request, f"You have been successfully enrolled to the event.")
+            return redirect("home_page")
+        else:
+            print("Form is not valid")
+            print(form.errors)
+    else:
+        form = PaymentForm()
+
+    eventname = event.name
+    user_firstname = user.first_name
+    user_lastname = user.last_name
+    context = {
+        "eventname": eventname,
+        "username": username,
+        "user_firstname": user_firstname,
+        "user_lastname": user_lastname,
+        "price": ticket_price,
+        "form": form,
+    }
+    return render(request, "payment_page.html", context)
 
 
 @login_required
@@ -336,6 +394,7 @@ def create_event(request):
 def admin_view(request):
     return render(request, "admin_temps/admin_page.html", {"title": "Admin page"})
 
+
 @moderator_required
 def approve_place(request, place_id):
     try:
@@ -349,6 +408,7 @@ def approve_place(request, place_id):
         return HttpResponse("Place does not exist")
     return redirect("list_places_page")
 
+
 @moderator_required
 def reject_place(request, place_id):
     try:
@@ -361,6 +421,7 @@ def reject_place(request, place_id):
     except EventPlace.DoesNotExist:
         return HttpResponse("Place does not exist")
     return redirect("list_places_page")
+
 
 @moderator_required
 def approve_category(request, category_id):
@@ -396,7 +457,9 @@ def reject_category(request, category_id):
 @moderator_required
 def approve_event(request, event_id):
     try:
-        event = Event.objects.get(event_id=event_id)
+        event: Event = Event.objects.get(event_id=event_id)
+        event.registered_people.add(event.created)
+
         event.approved_by_mods = True
         event.accepted = Worker.objects.get(worker=request.user)
         event.save()

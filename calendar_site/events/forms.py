@@ -47,7 +47,8 @@ class EventForm(forms.Form):
     end_time = forms.TimeField(input_formats=['%H:%M'])
     capacity = forms.IntegerField()
     description = forms.CharField(widget=forms.Textarea)
-    ticket_price = forms.IntegerField()
+    ticket_price = forms.IntegerField(min_value=0)
+
     place = forms.ModelChoiceField(
         queryset=EventPlace.objects.all(),
         empty_label=None,
@@ -71,3 +72,19 @@ class CommentForm(forms.Form):
         (4, '4'),
         (5, '5')
     ], widget=forms.RadioSelect)
+
+
+class PaymentForm(forms.Form):
+
+    eventname = forms.CharField()
+    userlogin = forms.CharField()
+    user_firstname = forms.CharField()
+    user_lastname = forms.CharField()
+    ticket_price = forms.IntegerField()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # set readonly attribute for all fields
+        for field_name, field in self.fields.items():
+            self.fields[field_name].widget.attrs['readonly'] = True
+            self.fields[field_name].required = False

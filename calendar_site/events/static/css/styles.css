@@ -571,6 +571,14 @@ footer a {
     margin-top: 0;
 }
 
+.event-page-details h3 {
+    position: relative;
+    text-align: left;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 0;
+}
+
 .event_page_information h4 {
     font-weight: bold;
     line-height: 35px;
@@ -583,6 +591,7 @@ footer a {
     text-align: center;
     font-size: 30px;
 }
+
 
 .event_page_information p {
     font-size: 24px;
