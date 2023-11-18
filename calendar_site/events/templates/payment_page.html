@@ -40,6 +40,15 @@
 
                     <label for="ticket_price">Ticket price:</label>
                     <input type="text" id="ticket_price" name="tprice" value="{{ price }}" readonly>
+
+                    <label for="credit_card_num">Credit card number:</label>
+                    <input type="number" id="credit_card_num" name="credit_card_num"  required>
+
+                    <label >Date of card expiration:</label>
+                    {{ form.expiry_date }}
+
+                     <label for="card_code">CVV/CVC of the card(3-4 digits on the back):</label>
+                    <input type="number" id="card_code" name="card_code"  required>
                 </div>
                 <div class="form_class">
                     <button class="submit_button" type="submit">Pay & join the event</button>

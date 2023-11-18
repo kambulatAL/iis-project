@@ -1,4 +1,5 @@
 from django import forms
+from django.core.validators import MaxValueValidator
 
 from events.models import EventPlace, Category
 
@@ -24,13 +25,14 @@ class CategoryForm(forms.Form):
         required=False
     )
 
-    def __init__ (self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(CategoryForm, self).__init__(*args, **kwargs)
         self.fields['subcategory'].choices += [(category.name, category.name) for category in Category.objects.all()]
 
     # Function that update category choices in the form after adding new category
     def update_choices(self):
-        self.fields['subcategory'].choices = [(None, 'None')] + [(category.name, category.name) for category in Category.objects.all()]
+        self.fields['subcategory'].choices = [(None, 'None')] + [(category.name, category.name) for category in
+                                                                 Category.objects.all()]
 
 
 class PlaceForm(forms.Form):
@@ -75,16 +77,21 @@ class CommentForm(forms.Form):
 
 
 class PaymentForm(forms.Form):
+    eventname = forms.CharField(required=False)
+    userlogin = forms.CharField(required=False)
+    user_firstname = forms.CharField(required=False)
+    user_lastname = forms.CharField(required=False)
+    ticket_price = forms.IntegerField(required=False)
 
-    eventname = forms.CharField()
-    userlogin = forms.CharField()
-    user_firstname = forms.CharField()
-    user_lastname = forms.CharField()
-    ticket_price = forms.IntegerField()
+    credit_card_num = forms.IntegerField(required=True)
+    card_code = forms.IntegerField(validators=[MaxValueValidator(9999)], required=True)
+    expiry_date = forms.DateField(input_formats=['%m/%Y'], required=True,
+                                  widget=forms.DateInput(attrs={'placeholder': 'MM/YYYY'})
+                                  )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # set readonly attribute for all fields
         for field_name, field in self.fields.items():
-            self.fields[field_name].widget.attrs['readonly'] = True
-            self.fields[field_name].required = False
+            if field_name not in ['credit_card_num', 'card_code', 'expiry_date']:
+                self.fields[field_name].widget.attrs['readonly'] = True

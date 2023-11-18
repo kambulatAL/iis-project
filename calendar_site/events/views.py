@@ -198,7 +198,6 @@ def join_user_event(request, event_id, username):
         return redirect("home_page")
 
 
-# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?# Gde tut login_required?
 def get_data_event_page(event_id, username, form):
     event = Event.objects.get(pk=event_id)
     reg_users_count = len(event.registered_people.all())
