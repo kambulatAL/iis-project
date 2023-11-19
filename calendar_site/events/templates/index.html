@@ -70,7 +70,7 @@
 {% endif %}
 <div class="main_container">
     <h3>Events</h3>
-
+<!-- This is static event element, it is used for testing purposes 
     <div class="events_element">
         <div class="event-photo">
             <img src="{% static 'images/mbappe.jpg' %}" alt="Event Photo">
@@ -93,6 +93,7 @@
 <!--        </div>-->
         {% endif %}
     </div>
+-->
     {% for event in events %}
     {% if event.approved_by_mods %}
     <div class="events_element">
