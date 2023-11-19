@@ -72,9 +72,6 @@ class Category(models.Model):
     subcategory = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True, blank=True,
                                     related_name='category_subcategory')
     
-    # Если юзер удаляется, нужно ли удалять все категории, которые он создал?
-    # не позволяет сделать миграцию памаги
-    #created = models.ForeignKey(RegisteredUser, on_delete=models.CASCADE, related_name='event_category_created')
 
     accepted = models.ForeignKey(Worker, on_delete=models.CASCADE, null=True, blank=True,
                                  related_name='category_accepted')
@@ -135,7 +132,6 @@ class EventEstimation(models.Model):
     ])
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    is_hidden = models.BooleanField(default=False)
 
     class Meta:
         # create a primary key pair

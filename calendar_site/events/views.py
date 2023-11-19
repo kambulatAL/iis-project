@@ -161,11 +161,9 @@ def create_category(request):
                 return HttpResponse("Category with this name already exists")
 
             if subcategory == "None":
-                #new_category = Category.objects.create(name=name, created=request.user)
                 new_category = Category.objects.create(name=name)
                 new_category.save()
             elif subcategory != "None":
-                #new_category = Category.objects.create(name=name, subcategory=Category.objects.get(name=subcategory), created=request.user)
                 new_category = Category.objects.create(name=name, subcategory=Category.objects.get(name=subcategory))
                 new_category.save()
             else:

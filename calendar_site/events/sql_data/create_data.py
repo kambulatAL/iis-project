@@ -33,31 +33,26 @@ RegisteredUser.create_user('user_login', 'user_name', 'user_surname', 'user_emai
 Category.objects.create(
     name='Music',
     accepted=Worker.objects.get(worker=RegisteredUser.objects.get(username='xassat00')),
-    #created=RegisteredUser.objects.get(username='xblanco00'),
     approved_by_mods=True
     )
 Category.objects.create(
     name='Sport',
     accepted=Worker.objects.get(worker=RegisteredUser.objects.get(username='xassat00')),
-    #created=RegisteredUser.objects.get(username='xblanco00'),
     approved_by_mods=True
     )
 Category.objects.create(
     name='Programmer meeting',
     accepted=Worker.objects.get(worker=RegisteredUser.objects.get(username='xassat00')),
-    #created=RegisteredUser.objects.get(username='xblanco00'),
     approved_by_mods=True
     )
 Category.objects.create(
     name='Food',
     accepted=Worker.objects.get(worker=RegisteredUser.objects.get(username='xassat00')),
-    #created=RegisteredUser.objects.get(username='xblanco00'),
     approved_by_mods=True
     )
 Category.objects.create(
     name='Movies',
     accepted=Worker.objects.get(worker=RegisteredUser.objects.get(username='xassat00')),
-    #created=RegisteredUser.objects.get(username='xblanco00'),
     approved_by_mods=True
     )
 

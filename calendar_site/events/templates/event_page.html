@@ -117,13 +117,12 @@
                 <!-- Show all comments -->
                 {% for comm in all_event_comments %}
                 <div class="user_comments">
-                    {% if not comm.is_hidden  %} <!-- If comment is not hidden, show it with Admin buttons -->
                     <!-- Admin can delete moderators comment, but not other admins coment-->
                     <!-- Moderator can NOT delete other moderators comment nor other admins coment-->
                         {% if user.is_admin or user.is_moderator %}
                             {% if comm.user.username != user.username %} <!-- To check, if it is my commentary -->
                             <div class="delete_comment">
-                                <a href="#" class="delete_button" >Hide comment</a>
+                                <a href="#" class="delete_button" >Delete comment</a>
                             </div>
                             {% endif %}
                         {% endif %}
@@ -136,10 +135,6 @@
                         <div class="estimation">
                             Estimation: {{ comm.estimation }} / 5
                         </div>
-                    {% else %}
-                    <!-- Вот это короче уже готово-->
-                        <p>commentary [{{ comm.user.username }}] is hidden by Moderators</p>
-                    {% endif %}
                 </div>
                 {% endfor %}
             {% endif %}
