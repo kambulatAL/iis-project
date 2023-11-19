@@ -71,6 +71,10 @@ class Category(models.Model):
     name = models.CharField(max_length=255)
     subcategory = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True, blank=True,
                                     related_name='category_subcategory')
+    
+    # Если юзер удаляется, нужно ли удалять все категории, которые он создал?
+    # не позволяет сделать миграцию памаги
+    #created = models.ForeignKey(RegisteredUser, on_delete=models.CASCADE, related_name='event_category_created')
 
     accepted = models.ForeignKey(Worker, on_delete=models.CASCADE, null=True, blank=True,
                                  related_name='category_accepted')
@@ -91,7 +95,7 @@ class Event(models.Model):
     end_time = models.TimeField(null=False, default='12:30')
 
     capacity = models.IntegerField()
-    ticket_price = models.IntegerField()
+    ticket_price = models.IntegerField(null=True)
     description = models.TextField(null=True)
     photo = models.ImageField(upload_to=f"images/events/%y/%m/%d/")
 
@@ -116,6 +120,8 @@ class Event(models.Model):
     approved_by_mods = models.BooleanField(default=False)
 
 
+
+
 # represents "Hodnoceni" from the ER diagram
 class EventEstimation(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='event_estimation_event')
@@ -129,6 +135,7 @@ class EventEstimation(models.Model):
     ])
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    is_hidden = models.BooleanField(default=False)
 
     class Meta:
         # create a primary key pair

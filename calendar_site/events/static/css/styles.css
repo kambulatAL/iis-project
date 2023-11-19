@@ -45,6 +45,11 @@ header {
     background-color: #86b049;
 }
 
+.messages .alert-info {
+    padding: 20px;
+    background-color: #d89700;
+}
+
 .messages .alert-warning {
     padding: 20px;
     background-color: #f0ab9c;
@@ -213,6 +218,11 @@ footer a {
     margin: auto;
     border-radius: 5px;
     width: 500px;
+}
+
+.form_class .radio {
+    margin: 20px auto;
+    text-align: center;
 }
 
 
@@ -727,6 +737,7 @@ footer a {
 
 .user_comments {
     background-color: #969696;
+    border-radius: 20px;
     padding: 10px;
     margin: 10px;
     font-size: 18px;

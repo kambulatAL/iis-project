@@ -110,7 +110,11 @@
             <p>Capacity: {{ event.capacity }}</p>
         </div>
         <div class="event-details-more">
-            <p>Cost: {{ event.ticket_price }} eur</p>
+            {% if event.ticket_price == 0 %}
+                <p>Cost: Free entry </p>
+            {% else %}
+                <p>Cost: {{ event.ticket_price }} eur</p>
+            {% endif %}
             <p>Start: {{ event.start_time }} - {{ event.end_time }}</p>
             <p>Category:
                 {% for category in event.categories.all %}

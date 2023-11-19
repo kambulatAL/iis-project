@@ -22,7 +22,6 @@
 {% block content_block %} 
     <div class="create_container">
         <h2>Create new category</h2>
-
         <div class="create_container_fill">
             <form method="POST">
                 {% csrf_token %} 
@@ -49,6 +48,11 @@
                     <button class="submit_button" type="submit">Create Category</button>
                 </div>
             </form>
+        </div>
+
+        <h2>My created categories</h2>
+        <div class="create_container_fill">
+            <p> Need to be done</p>
         </div>
 
     </div>

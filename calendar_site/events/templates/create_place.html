@@ -44,5 +44,36 @@
             </form>
         </div>
 
+        <h2>My created places</h2>
+        <div class="create_container_fill">
+            {%for place in places %}
+                {% if place.created == user %}
+                <div class="events_element">
+                    <div class="event-details">
+                        <p>Place: {{place.city}} - {{place.street}}: {{ place.place_name }} </p>
+                    </div>
+                    <div class="event_aprovals">
+                        {% if place.accepted %}
+                        {% if place.approved_by_mods %}
+                            <div class="my-calendar approved">
+                                Approved by mod {{place.accepted.worker}}
+                            </div>
+                        {% else %}
+                            <div class="my-calendar rejected">
+                                Rejected by mod {{place.accepted.worker}}
+                            </div>
+                        {% endif %}
+                        <!-- else it means it is on stage of approving-->
+                        {% else %}
+                            <div class="my-calendar consideration">
+                                Under consideration
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
     </div>
 {% endblock content_block %}

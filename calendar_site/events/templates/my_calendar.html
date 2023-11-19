@@ -22,6 +22,20 @@
 
 
 {% block category_block %}
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+        {% if message.tags %}
+            <div class="{% if message.tags == 'success' %} alert-success
+                        {% elif message.tags == 'warning' %} alert-warning
+                        {% elif message.tags == 'info' %} alert-info
+                        {% endif %}">
+                {{ message }}
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
+{% endif %}
 <div class="category">
     <h3>My Calendar</h3>
 </div>

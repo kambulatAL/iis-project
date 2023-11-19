@@ -139,9 +139,11 @@ def create_place(request):
     else:
         form = PlaceForm()
 
+    places = EventPlace.objects.all()
     context = {
         "title": "Create place page",
-        "form": form
+        "form": form,
+        "places": places
     }
 
     return render(request, "create_place.html", context)
@@ -159,9 +161,11 @@ def create_category(request):
                 return HttpResponse("Category with this name already exists")
 
             if subcategory == "None":
+                #new_category = Category.objects.create(name=name, created=request.user)
                 new_category = Category.objects.create(name=name)
                 new_category.save()
             elif subcategory != "None":
+                #new_category = Category.objects.create(name=name, subcategory=Category.objects.get(name=subcategory), created=request.user)
                 new_category = Category.objects.create(name=name, subcategory=Category.objects.get(name=subcategory))
                 new_category.save()
             else:
@@ -330,7 +334,6 @@ def create_event(request):
     if request.method == 'POST':
         form = EventForm(request.POST, request.FILES)
         if form.is_valid():
-            print("Form is valid")
             name = form.cleaned_data.get("name")
             start_date = form.cleaned_data.get("start_date")
             end_date = form.cleaned_data.get("end_date")
@@ -341,11 +344,18 @@ def create_event(request):
             ticket_price = form.cleaned_data.get("ticket_price")
             place = form.cleaned_data.get("place")
             photo = form.cleaned_data.get("photo")
+            payment_type = form.cleaned_data.get("payment_type")
+
 
             # Add categories from checkboxes
             categories = form.cleaned_data.get("categories")
-            # print it to console
-            print(categories)
+
+            # If payment type is free, then ticket price is automatically 0
+            if payment_type == "free":
+                ticket_price = 0
+            elif payment_type == "paid" and ticket_price is None:
+                return HttpResponse("You need to specify ticket price")
+            
 
             event = Event(
                 name=name,
@@ -371,6 +381,7 @@ def create_event(request):
             messages.success(request, f"Event {name} has been sent for approval.")
 
             return redirect("home_page")
+        
         else:
             print("Form is not valid")
             print(form.errors)

@@ -93,11 +93,36 @@
                         </div>
                 </div>
 
+
+                <!--
+                    Need to change forms and models.py, views.py for that
+                -->
                 <div class="form_class">
-                    <label for="ticket_price">Ticket Price:</label>
-                    <input type="number" id="ticket_price" name="ticket_price" required>
+                    <label>Is it paid or free?</label>
+                    <div class="radio">
+                        <input type="radio" id="paid" name="payment_type" value="paid" onclick="showTicketPrice()" required>
+                        <label for="paid">Paid</label>
+                    </div>
+                    <div class="radio">
+                        <input type="radio" id="free" name="payment_type" value="free" onclick="hideTicketPrice()" required>
+                        <label for="free">Free</label>
+                    </div>
                 </div>
 
+                <div class="form_class" id="ticket_price_field">
+                    <label for="ticket_price">Ticket Price:</label>
+                    <input type="number" id="ticket_price" name="ticket_price">
+                </div>
+
+                <script>
+                    function showTicketPrice() {
+                        document.getElementById("ticket_price_field").style.display = "";
+                    }
+                
+                    function hideTicketPrice() {
+                        document.getElementById("ticket_price_field").style.display = "none";
+                    }
+                </script>
                 <div class="form_class">
                     <button class="submit_button" type="submit">Create Event</button>
                 </div>

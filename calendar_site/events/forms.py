@@ -49,7 +49,8 @@ class EventForm(forms.Form):
     end_time = forms.TimeField(input_formats=['%H:%M'])
     capacity = forms.IntegerField()
     description = forms.CharField(widget=forms.Textarea)
-    ticket_price = forms.IntegerField(min_value=0)
+    ticket_price = forms.IntegerField(min_value=0, required=False)
+    payment_type = forms.CharField()
 
     place = forms.ModelChoiceField(
         queryset=EventPlace.objects.all(),
