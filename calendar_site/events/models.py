@@ -3,9 +3,7 @@ from django import forms
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 
-# TODO: Если что, название этих моделей в Датабазе начинается с events_ 
-# TODO: то есть, есть модель Worker, а в базе она называется events_worker
-# TODO: это немного не удобно, но я не знаю, как это исправить
+
 default_pass = 'user_pass'
 
 
@@ -58,11 +56,11 @@ class EventPlace(models.Model):
     # foreign key represents the "Navrhl" relation from the ERD
     created = models.ForeignKey(RegisteredUser,
                                 on_delete=models.CASCADE,
-                                related_name='event_place_created')  
+                                related_name='event_place_created')
     # foreign key represents the "Schvalil" relation from the ERD
     accepted = models.ForeignKey(Worker, on_delete=models.CASCADE, null=True,
                                  blank=True,
-                                 related_name='event_place_accepted')  
+                                 related_name='event_place_accepted')
     approved_by_mods = models.BooleanField(default=False)
 
 
@@ -71,7 +69,6 @@ class Category(models.Model):
     name = models.CharField(max_length=255)
     subcategory = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True, blank=True,
                                     related_name='category_subcategory')
-    
 
     accepted = models.ForeignKey(Worker, on_delete=models.CASCADE, null=True, blank=True,
                                  related_name='category_accepted')
@@ -117,8 +114,6 @@ class Event(models.Model):
     approved_by_mods = models.BooleanField(default=False)
 
 
-
-
 # represents "Hodnoceni" from the ER diagram
 class EventEstimation(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='event_estimation_event')
@@ -147,7 +142,6 @@ class TicketPayment(models.Model):
     creation_date = models.DateField(auto_now_add=True)
     creation_time = models.TimeField(auto_now_add=True)
     ticket_price = models.IntegerField()
-
 
     class Meta:
         # create a primary key pair

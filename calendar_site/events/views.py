@@ -66,10 +66,25 @@ def login_required(view_func):
     return _wrapper
 
 
+def event_is_ended(events):
+    events_ended = []
+
+    for event in events:
+        event_end_date = event.end_date.strftime('%Y-%m-%d')
+        event_end_time = event.end_time.strftime('%H:%M:%S')
+        today = datetime.now().date().strftime("%Y-%m-%d")
+        today_time = datetime.today().time().strftime("%H:%M:%S")
+        ended = (event_end_date == today and today_time > event_end_time) or event_end_date < today
+        events_ended.append(ended)
+    return events_ended
+
+
 def index(request):
     events = Event.objects.all()
+    events_ended = event_is_ended(events)
     categories = Category.objects.all()
-    return render(request, "index.html", {"title": "Home page", "events": events, "categories": categories})
+    return render(request, "index.html",
+                  {"title": "Home page", "events": zip(events, events_ended), "categories": categories})
 
 
 @login_required
@@ -194,7 +209,7 @@ def join_user_event(request, event_id, username):
             event = Event.objects.get(pk=event_id)
             event.registered_people.add(user)
             event.save()
-            messages.success(request, f"User {username} has successfully joined to the '{event.name}' event.")
+            messages.success(request, f"You have been successfully enrolled to the {event.name} event.")
         except RegisteredUser.DoesNotExist:
             return HttpResponse("User does not exist")
         return redirect("home_page")
@@ -206,21 +221,15 @@ def get_data_event_page(event_id, username, form):
     created = str(event.created)
     username = str(username)
 
-    event_end_date = event.end_date.strftime('%Y-%m-%d')
-    event_end_time = event.end_time.strftime('%H:%M:%S')
-    today = datetime.now().date().strftime("%Y-%m-%d")
-    today_time = datetime.today().time().strftime("%H:%M:%S")
-
     all_event_comments = EventEstimation.objects.filter(event__pk=event_id)
 
     leaved_comments = [(com.event.pk, com.user.username) for com in EventEstimation.objects.all()]
     can_leave_comment = (event.pk, username) not in leaved_comments and username != event.created.username
-
-    allow_comments = (event_end_date == today and today_time > event_end_time) or event_end_date < today
+    event_ended = event_is_ended([event])[0]
 
     context = {"event": event, "enrolled_people": reg_users_count,
                "created": created, "username": username,
-               "allow_comments": allow_comments, "can_leave_comment": can_leave_comment,
+               "event_is_ended": event_ended, "can_leave_comment": can_leave_comment,
                "all_event_comments": all_event_comments, "form": form}
     return context
 
@@ -241,8 +250,7 @@ def filter_by_category(request, cat_id):
     categories = Category.objects.all()
 
     selected_cat: Category = Category.objects.get(pk=cat_id)
-    all_cats = selected_cat.name == "All categories"
-    print(cat_id)
+
     subcats = []
 
     while selected_cat is not None:
@@ -253,8 +261,8 @@ def filter_by_category(request, cat_id):
     for event in events:
         [filtered_events.append(event) for cat in event.categories.all() if cat.pk in subcats]
 
-    if all_cats: filtered_events = events
-    return render(request, "index.html", {"title": "Home page", "events": filtered_events, "categories": categories})
+    events_ended = event_is_ended(filtered_events)
+    return render(request, "index.html", {"title": "Home page", "events": zip(filtered_events,events_ended), "categories": categories})
 
 
 @login_required
@@ -270,7 +278,7 @@ def make_payment(request, event_id, username):
             payment.save()
             event.registered_people.add(user)
             # Add a success message
-            messages.success(request, f"You have been successfully enrolled to the event.")
+            messages.success(request, f"You have been successfully enrolled to the {event.name} event.")
             return redirect("home_page")
         else:
             print("Form is not valid")
@@ -320,6 +328,14 @@ def leave_comment(request, event_id, username):
     return render(request, "event_page.html", context)
 
 
+@moderator_required
+def delete_comment(request, event_id, username):
+    EventEstimation.objects.filter(event__pk=event_id, user__username=username).delete()
+    form = CommentForm()
+    context = get_data_event_page(event_id, username, form)
+    return render(request, 'event_page.html', context)
+
+
 @login_required
 def list_enrolled_users(request, event_id):
     event = Event.objects.get(pk=event_id)
@@ -344,7 +360,6 @@ def create_event(request):
             photo = form.cleaned_data.get("photo")
             payment_type = form.cleaned_data.get("payment_type")
 
-
             # Add categories from checkboxes
             categories = form.cleaned_data.get("categories")
 
@@ -353,7 +368,6 @@ def create_event(request):
                 ticket_price = 0
             elif payment_type == "paid" and ticket_price is None:
                 return HttpResponse("You need to specify ticket price")
-            
 
             event = Event(
                 name=name,
@@ -379,7 +393,7 @@ def create_event(request):
             messages.success(request, f"Event {name} has been sent for approval.")
 
             return redirect("home_page")
-        
+
         else:
             print("Form is not valid")
             print(form.errors)

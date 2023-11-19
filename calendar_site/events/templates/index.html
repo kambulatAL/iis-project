@@ -10,7 +10,6 @@
         <a href="{% url 'admin_page' %}">Admin Panel</a>
         {% endif %}
         <a href="{% url 'my_calendar_page' %}">My Calendar</a>
-        <a href="#">Settings</a>
         <a href="{% url 'logout_page' %}">Log Out</a>
         {% else %}
         <a href="{% url 'login_page' %}">Login</a>
@@ -94,7 +93,7 @@
         {% endif %}
     </div>
 -->
-    {% for event in events %}
+    {% for event,event_is_ended in events %}
     {% if event.approved_by_mods %}
     <div class="events_element">
         {% if event.photo %}
@@ -124,22 +123,35 @@
             </p>
         </div>
         <!-- If user is logged in, he can see the buttons -->
+
         {% if user.is_authenticated %}
+         {% if not event_is_ended %}
             {% if not user in event.registered_people.all %}
-                {% if event.ticket_price == 0%}
-                    <div class="event-button">
-                        <a href="{% url 'event_join_user_page' event.pk user.username %}">Join</a>
-                    </div>
-                {% else  %}
+                {% if event.registered_people.all|length < event.capacity %}
+                    {% if event.ticket_price == 0%}
                         <div class="event-button">
-                        <a href="{% url 'payment_page' event.pk user.username %}">Pay&nbsp;{{event.ticket_price}}&nbsp;euro&nbsp;to&nbsp;join</a>
+                            <a href="{% url 'event_join_user_page' event.pk user.username %}">Join</a>
+                        </div>
+                    {% else  %}
+                            <div class="event-button">
+                            <a href="{% url 'payment_page' event.pk user.username %}">Pay&nbsp;{{event.ticket_price}}&nbsp;euro&nbsp;to&nbsp;join</a>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="event-button">
+                        <a href="#">Capacity&nbsp;is&nbsp;full</a>
                     </div>
                 {% endif %}
-            {%else%}
-            <div class="event-button">
-                <a href="#">Registered</a>
-            </div>
+            {% else %}
+                <div class="event-button">
+                    <a href="#">Registered</a>
+                </div>
             {% endif %}
+        {% else %}
+            <div class="event-button">
+                <a href="#">Event&nbsp;is&nbsp;ended</a>
+            </div>
+        {% endif %}
         {% endif %}
 
     </div>
