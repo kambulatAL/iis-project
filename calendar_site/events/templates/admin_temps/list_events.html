@@ -24,12 +24,20 @@
                         <strong>Event Description:</strong> {{ event.description }}<br>
                         <strong>Event Date:</strong> {{ event.start_date }}<br>
                         <strong>Event Time:</strong> {{ event.start_time }}<br>
-                        <strong>Event Place:</strong> {{ event.event_place.city }}<br>
+                        <strong>Event Place:</strong> {{ event.event_place.city }}, {{event.event_place.street}}: {{event.event_place.place_name}} <br>
 
                         <strong>Event Categories:</strong>
                             {% for category in event.categories.all %}
                                  {{ category.name }} | 
                             {% endfor %}
+                        <br>
+                        <strong>Event Capacity:</strong> {{ event.capacity }}<br>
+                        <strong>Event Ticket Price:</strong> 
+                          {% if event.ticket_price == 0 %}
+                            Free
+                          {% else %}
+                            {{ event.ticket_price }} <strong>eur</strong>
+                          {% endif %}
                     </div>
                     <div class="event_aprovals">
                         {% if event.accepted %}
@@ -46,7 +54,6 @@
                             <div class="button_column">
                                 <a href="{% url 'approve_event_page' event.event_id %}" class="button_approve">Approve</a>
                                 <a href="{% url 'reject_event_page' event.event_id %}" class="button_reject">Reject</a>
-                                <a href="#" class="button_more">More</a>
                             </div>
                         {% endif %}
                     </div>
