@@ -805,4 +805,22 @@ input[type="radio"] {
 input[type="radio"]:checked {
     background-color: #3498db;
 }
+
+.event-info {
+    max-width: 500px;
+    overflow: auto;
+}
+
+.event-description {
+    margin: 0;
+    white-space: pre-line;
+    word-wrap: break-word;
+}
+
+.event_page_information p {
+    margin: 0;
+    white-space: pre-line;
+    word-wrap: break-word;
+}
+
 /*^^^ Maybe will change later*//* Maybe will change later*//* Maybe will change later*/

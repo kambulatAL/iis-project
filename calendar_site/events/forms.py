@@ -20,22 +20,20 @@ class RegisterForm(forms.Form):
     phone_number = forms.CharField()
 
 
-# form fo category creation
 class CategoryForm(forms.Form):
     name = forms.CharField()
-    subcategory = forms.ChoiceField(
-        choices=[(None, 'None')] + [(category.name, category.name) for category in Category.objects.all()],
+    subcategory = forms.ModelChoiceField(
+        queryset=Category.objects.all(),
+        empty_label='None',
         required=False
     )
 
     def __init__(self, *args, **kwargs):
         super(CategoryForm, self).__init__(*args, **kwargs)
-        self.fields['subcategory'].choices += [(category.name, category.name) for category in Category.objects.all()]
+        self.fields['subcategory'].queryset = Category.objects.all()
 
-    # Function that update category choices in the form after adding new category
     def update_choices(self):
-        self.fields['subcategory'].choices = [(None, 'None')] + [(category.name, category.name) for category in
-                                                                 Category.objects.all()]
+        self.fields['subcategory'].queryset = Category.objects.all()
 
 
 # form for place creation

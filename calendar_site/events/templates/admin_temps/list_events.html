@@ -21,7 +21,7 @@
                 <li>
                     <div class="event-info">
                         <strong>Event Name:</strong> {{ event.name }}<br>
-                        <strong>Event Description:</strong> {{ event.description }}<br>
+                        <strong>Event Description:</strong> <p class="event-description"> {{ event.description }} </p><br>
                         <strong>Event Date:</strong> {{ event.start_date }}<br>
                         <strong>Event Time:</strong> {{ event.start_time }}<br>
                         <strong>Event Place:</strong> {{ event.event_place.city }}, {{event.event_place.street}}: {{event.event_place.place_name}} <br>

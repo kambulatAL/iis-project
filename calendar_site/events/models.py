@@ -74,8 +74,7 @@ class Category(models.Model):
                                  related_name='category_accepted')
     approved_by_mods = models.BooleanField(default=False)
 
-    def __str__(self):
-        return self.name
+    
 
 
 # table represents event

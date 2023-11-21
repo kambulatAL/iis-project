@@ -32,11 +32,11 @@
                 <div class="form_class">
                     <label for="subcategory">Subcategory of (leave None if it is not):</label>
                     <select id="subcategory" name="subcategory">
-                        <option value="None" selected="selected">None</option>
+                        <option value="">None</option>
                         {% for category in category_names %}
                             {% if category.accepted %}
                                 {% if category.approved_by_mods %}
-                                    <option value="{{ category.name }}">{{ category.name }}</option>
+                                    <option value="{{category.id}}">{{ category.name }}</option>
                                 {% endif %}
                             {% endif %}
                         {% endfor %}

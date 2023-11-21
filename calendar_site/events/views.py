@@ -178,12 +178,11 @@ def create_category(request):
             # check if name is unique
             if Category.objects.filter(name=name).exists():
                 return HttpResponse("Category with this name already exists")
-
-            if subcategory == "None":
+            if subcategory == None:
                 new_category = Category.objects.create(name=name)
                 new_category.save()
-            elif subcategory != "None":
-                new_category = Category.objects.create(name=name, subcategory=Category.objects.get(name=subcategory))
+            elif subcategory != None:
+                new_category = Category.objects.create(name=name, subcategory=subcategory)
                 new_category.save()
             else:
                 return HttpResponse("Something went wrong during category creation")
@@ -195,7 +194,6 @@ def create_category(request):
             print(form.errors)
     else:
         form = CategoryForm()
-
     category_names = Category.objects.all()
     context = {
         "title": "Create category page",
