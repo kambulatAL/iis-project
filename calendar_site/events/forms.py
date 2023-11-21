@@ -4,11 +4,13 @@ from django.core.validators import MaxValueValidator
 from events.models import EventPlace, Category
 
 
+# form for user to enter as a registered user
 class LoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
 
 
+# form for registration
 class RegisterForm(forms.Form):
     username = forms.CharField()
     name = forms.CharField()
@@ -18,6 +20,7 @@ class RegisterForm(forms.Form):
     phone_number = forms.CharField()
 
 
+# form fo category creation
 class CategoryForm(forms.Form):
     name = forms.CharField()
     subcategory = forms.ChoiceField(
@@ -35,12 +38,14 @@ class CategoryForm(forms.Form):
                                                                  Category.objects.all()]
 
 
+# form for place creation
 class PlaceForm(forms.Form):
     city = forms.CharField()
     street = forms.CharField()
     place_name = forms.CharField()
 
 
+# form for event creation
 class EventForm(forms.Form):
     name = forms.CharField()
     start_date = forms.DateField()
@@ -66,6 +71,7 @@ class EventForm(forms.Form):
     )
 
 
+# form for writing comment and estimation for an event
 class CommentForm(forms.Form):
     content = forms.CharField(widget=forms.Textarea)
     estimation = forms.ChoiceField(choices=[
@@ -77,6 +83,7 @@ class CommentForm(forms.Form):
     ], widget=forms.RadioSelect)
 
 
+# form for payment in oder to enroll into event
 class PaymentForm(forms.Form):
     eventname = forms.CharField(required=False)
     userlogin = forms.CharField(required=False)

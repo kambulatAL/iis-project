@@ -7,8 +7,6 @@ from django.contrib import messages
 from datetime import datetime
 
 
-############################################################################################### Admin functions
-
 # function that delete user from database by username
 def delete_user(request, username):
     # get the user that we want to delete
@@ -66,6 +64,7 @@ def login_required(view_func):
     return _wrapper
 
 
+# function that checks if events from the given list are ended
 def event_is_ended(events):
     events_ended = []
 
@@ -79,6 +78,7 @@ def event_is_ended(events):
     return events_ended
 
 
+# shows main page
 def index(request):
     events = Event.objects.all()
     events_ended = event_is_ended(events)
@@ -87,6 +87,7 @@ def index(request):
                   {"title": "Home page", "events": zip(events, events_ended), "categories": categories})
 
 
+# constructs page "My calendar" with events where user is enrolled
 @login_required
 def my_calendar(request):
     today_date = datetime.now()
@@ -102,25 +103,28 @@ def my_calendar(request):
     return render(request, "my_calendar.html", context)
 
 
+# shows list of places(unapproved/approved) on the "Admin panel" page
 @moderator_required
 def list_places(request):
     places = EventPlace.objects.all()
     return render(request, "admin_temps/list_places.html", {"title": "List of places", "places": places})
 
 
+# shows list of events(unapproved/approved) on the "Admin panel" page
 @moderator_required
 def list_events(request):
     events = Event.objects.all()
     return render(request, "admin_temps/list_events.html", {"title": "List of events", "events": events})
 
 
-# Make sure, that user is admin
+# shows list of users on the "Admin panel" page
 @admin_required
 def list_users(request):
     users = RegisteredUser.objects.all()
     return render(request, "admin_temps/list_users.html", {"title": "List of users", "users": users})
 
 
+# shows list of categories(unapproved/approved) on the "Admin panel" page
 @moderator_required
 def list_categories(request):
     categories = Category.objects.all()
@@ -128,8 +132,7 @@ def list_categories(request):
                   {"title": "List of categories", "categories": categories})
 
 
-####################################################################################### Create functions
-
+# allows a user to create a place
 @login_required
 def create_place(request):
     if request.method == 'POST':
@@ -164,6 +167,7 @@ def create_place(request):
     return render(request, "create_place.html", context)
 
 
+# allows a user to create a category
 @login_required
 def create_category(request):
     if request.method == 'POST':
@@ -201,6 +205,7 @@ def create_category(request):
     return render(request, "create_category.html", context)
 
 
+# allows a user to join to an event(free)
 @login_required
 def join_user_event(request, event_id, username):
     if request.user.is_authenticated:
@@ -215,6 +220,7 @@ def join_user_event(request, event_id, username):
         return redirect("home_page")
 
 
+# help function for event data extraction
 def get_data_event_page(event_id, username, form):
     event = Event.objects.get(pk=event_id)
     reg_users_count = len(event.registered_people.all())
@@ -234,6 +240,7 @@ def get_data_event_page(event_id, username, form):
     return context
 
 
+# function is responsible for event page showing
 def show_event_page(request, event_id):
     form = CommentForm()
     context = get_data_event_page(event_id, request.user.username, form)
@@ -245,6 +252,7 @@ def show_event_page(request, event_id):
     return render(request, 'event_page.html', context)
 
 
+# filters events on the main page by selected category
 def filter_by_category(request, cat_id):
     events: Event = Event.objects.all()
     categories = Category.objects.all()
@@ -262,9 +270,11 @@ def filter_by_category(request, cat_id):
         [filtered_events.append(event) for cat in event.categories.all() if cat.pk in subcats]
 
     events_ended = event_is_ended(filtered_events)
-    return render(request, "index.html", {"title": "Home page", "events": zip(filtered_events,events_ended), "categories": categories})
+    return render(request, "index.html",
+                  {"title": "Home page", "events": zip(filtered_events, events_ended), "categories": categories})
 
 
+# make payment to enroll in an event(paid)
 @login_required
 def make_payment(request, event_id, username):
     event: Event = Event.objects.get(pk=event_id)
@@ -300,6 +310,7 @@ def make_payment(request, event_id, username):
     return render(request, "payment_page.html", context)
 
 
+# allow user to leave a comment after event is ended
 @login_required
 def leave_comment(request, event_id, username):
     event = Event.objects.get(pk=event_id)
@@ -328,6 +339,7 @@ def leave_comment(request, event_id, username):
     return render(request, "event_page.html", context)
 
 
+# allow moderator/admin to delete comment of a user
 @moderator_required
 def delete_comment(request, event_id, username):
     EventEstimation.objects.filter(event__pk=event_id, user__username=username).delete()
@@ -336,6 +348,7 @@ def delete_comment(request, event_id, username):
     return render(request, 'event_page.html', context)
 
 
+# allows creator of event to list all registered users
 @login_required
 def list_enrolled_users(request, event_id):
     event = Event.objects.get(pk=event_id)
@@ -343,6 +356,7 @@ def list_enrolled_users(request, event_id):
     return render(request, 'list_enrolled_people.html', {"enrolled_people": reg_users})
 
 
+# allows a user to create an event
 @login_required
 def create_event(request):
     if request.method == 'POST':
@@ -412,11 +426,13 @@ def create_event(request):
     return render(request, "create_event.html", context)
 
 
+# shows page for admins/moders
 @moderator_required
 def admin_view(request):
     return render(request, "admin_temps/admin_page.html", {"title": "Admin page"})
 
 
+# function allows admins/moders to approve created place by a user
 @moderator_required
 def approve_place(request, place_id):
     try:
@@ -431,6 +447,7 @@ def approve_place(request, place_id):
     return redirect("list_places_page")
 
 
+# function allows admins/moders to reject created place by a user
 @moderator_required
 def reject_place(request, place_id):
     try:
@@ -445,6 +462,7 @@ def reject_place(request, place_id):
     return redirect("list_places_page")
 
 
+# function allows admins/moders to approve created category by a user
 @moderator_required
 def approve_category(request, category_id):
     try:
@@ -462,6 +480,7 @@ def approve_category(request, category_id):
     return redirect("list_categories_page")
 
 
+# function allows admins/moders to reject created category by a user
 @moderator_required
 def reject_category(request, category_id):
     try:
@@ -476,6 +495,7 @@ def reject_category(request, category_id):
     return redirect("list_categories_page")
 
 
+# function allows admins/moders to approve created event by a user
 @moderator_required
 def approve_event(request, event_id):
     try:
@@ -492,6 +512,7 @@ def approve_event(request, event_id):
     return redirect("list_events_page")
 
 
+# function allows admins/moders to reject created event by a user
 @moderator_required
 def reject_event(request, event_id):
     try:
@@ -507,12 +528,13 @@ def reject_event(request, event_id):
     return redirect("list_events_page")
 
 
-####################################################################################### Authentication functions
+# allow user to log out from his account
 def logout_view(request):
     logout(request)
     return redirect("home_page")
 
 
+# allows user to log in to his account from a corresponding page
 def login_view(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -532,6 +554,7 @@ def login_view(request):
     return render(request, "login_temps/login.html", {"title": "Login page", "form": form})
 
 
+# allows to create a new account for a new user from a corresponding page
 def register_view(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
@@ -564,8 +587,6 @@ def register_view(request):
     return render(request, "login_temps/register.html", {"title": "Register page", "form": form})
 
 
-#######################################################################################
-
-
+# runs when there is an unknown page
 def pageNotFound(request, exception):
     return HttpResponseNotFound('<h1>Page not found</h1>')

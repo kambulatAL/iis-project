@@ -69,30 +69,7 @@
 {% endif %}
 <div class="main_container">
     <h3>Events</h3>
-<!-- This is static event element, it is used for testing purposes 
-    <div class="events_element">
-        <div class="event-photo">
-            <img src="{% static 'images/mbappe.jpg' %}" alt="Event Photo">
-        </div>
-        <div class="event-details">
-            <h4>Event: Mbappe auto session</h4>
-            <p>Date: 01.01.2023</p>
-            <p>Location: Stadion de el Mbappe</p>
-            <p>Capacity: 157/350</p>
-        </div>
-        <div class="event-details-more">
-            <p>Cost: 0 eur</p>
-            <p>Start: 18:00 - 22:00</p>
-            <p>Category: Sport</p>
-        </div>
 
-        {% if user.is_authenticated %}
-       <div class="event-button">
-            <button>Join</button>
-        </div>
-        {% endif %}
-    </div>
--->
     {% for event,event_is_ended in events %}
     {% if event.approved_by_mods %}
     <div class="events_element">

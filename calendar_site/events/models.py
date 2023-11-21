@@ -7,7 +7,7 @@ from django.utils import timezone
 default_pass = 'user_pass'
 
 
-# represents "Registrovany uzivatel" from the ER diagram
+# table represents registered user
 class RegisteredUser(AbstractUser):
     username = models.CharField(max_length=100, primary_key=True)
     password = models.CharField(max_length=100)
@@ -36,7 +36,7 @@ class RegisteredUser(AbstractUser):
             Worker.objects.create(worker=user, role='Moderator')
 
 
-# represents "Zamestnanec" from the ER diagram
+# table represents admin or moderator
 class Worker(models.Model):
     # create only two possible choices of the roles of workers
     ROLE_CHOICES = [
@@ -78,7 +78,7 @@ class Category(models.Model):
         return self.name
 
 
-# represents "Udalost" from the ER diagram
+# table represents event
 class Event(models.Model):
     name = models.CharField(max_length=255, default='Event name')
     event_id = models.AutoField(primary_key=True)
@@ -114,7 +114,7 @@ class Event(models.Model):
     approved_by_mods = models.BooleanField(default=False)
 
 
-# represents "Hodnoceni" from the ER diagram
+# table represents events estimation
 class EventEstimation(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='event_estimation_event')
     user = models.ForeignKey(RegisteredUser, on_delete=models.CASCADE, related_name='event_estimation_user')
@@ -135,7 +135,7 @@ class EventEstimation(models.Model):
         ]
 
 
-# represents "Uhrada vstupneho" from the ER diagram
+# table represents payment to enroll to an event
 class TicketPayment(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='ticket_payment_event')
     user = models.ForeignKey(RegisteredUser, on_delete=models.CASCADE, related_name='ticket_payment_user')
