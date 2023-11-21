@@ -17,4 +17,5 @@ python manage.py migrate
 # If data population goes succesfully print it
 python manage.py shell < populate_data.py && echo "Data population succesfull"
 
+
 exec "$@"

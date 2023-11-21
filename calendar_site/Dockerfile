@@ -22,6 +22,10 @@ RUN chmod +x /usr/src/calendar_site/entrypoint.sh
 
 COPY ./populate_data.py /usr/src/calendar_site/
 
+# Copy static files
+COPY ./static /usr/src/calendar_site/
+
+
 # Copy project
 COPY . .
 
