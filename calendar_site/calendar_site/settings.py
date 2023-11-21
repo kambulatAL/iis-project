@@ -76,12 +76,12 @@ WSGI_APPLICATION = 'calendar_site.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'calendar_events_db',
-        'USER': 'events_user',
-        'PASSWORD': 'events_password',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': os.environ.get("SQL_ENGINE", default='django.db.backends.postgresql'),
+        'NAME': os.environ.get("SQL_DATABASE", default='calendar_events_db'),
+        'USER': os.environ.get("SQL_USER", default='events_user'),
+        'PASSWORD': os.environ.get("SQL_PASSWORD", default='events_password'),
+        'HOST': os.environ.get("SQL_HOST", default='localhost'),
+        'PORT': os.environ.get("SQL_PORT", default='5432'),
     }
 }
 
