@@ -55,6 +55,9 @@
 
     <div class="event_page_information"> 
         <h4>Location:   {{ event.event_place.city }} - {{event.event_place.street}}</h4>
+        {% if event.event_place.place_name %}
+        <h4>Place name:     {{ event.event_place.place_name }} </h4>
+        {% endif %}
         <h4>Date:       {{ event.start_date }} - {{ event.end_date }}</h4>
         <h4>Start:      {{ event.start_time }} - {{ event.end_time }}</h4>
         <h4>Capacity:   {{ event.capacity }}</h4>

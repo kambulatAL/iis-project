@@ -84,6 +84,9 @@
             <h4>Event: <a href="{% url 'event_page' event.pk %}">{{ event.name }}</a></h4>
             <p>Date: {{ event.start_date }} - {{ event.end_date }}</p>
             <p>Location: {{ event.event_place.city }} - {{event.event_place.street}}</p>
+            {% if event.event_place.place_name %}
+            <p>Place name: {{ event.event_place.place_name }} </p>
+            {% endif %}
             <p>Capacity: {{ event.capacity }}</p>
         </div>
         <div class="event-details-more">
