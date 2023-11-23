@@ -1,5 +1,5 @@
 from django import forms
-from django.core.validators import MaxValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator
 from datetime import date
 from datetime import datetime
 from events.models import EventPlace, Category
@@ -13,12 +13,12 @@ class LoginForm(forms.Form):
 
 # form for registration
 class RegisterForm(forms.Form):
-    username = forms.CharField()
+    username = forms.CharField(max_length=100)
     name = forms.CharField()
     surname = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
-    email = forms.EmailField()
-    phone_number = forms.CharField(required=False)
+    email = forms.EmailField(max_length=255)
+    phone_number = forms.CharField(max_length=20, required=False)
 
 
 class CategoryForm(forms.Form):
@@ -47,8 +47,10 @@ class PlaceForm(forms.Form):
 # form for event creation
 class EventForm(forms.Form):
     name = forms.CharField()
-    start_date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}), initial=date.today())
-    end_date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}), initial=date.today())
+    start_date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}), initial=date.today(),
+                                 validators=[MinValueValidator(limit_value=date.today())])
+    end_date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}), initial=date.today(),
+                               validators=[MinValueValidator(limit_value=date.today())])
     start_time = forms.TimeField(input_formats=['%H:%M'])
     end_time = forms.TimeField(input_formats=['%H:%M'])
     capacity = forms.IntegerField(min_value=1)
@@ -69,8 +71,9 @@ class EventForm(forms.Form):
         widget=forms.CheckboxSelectMultiple()
     )
 
+    # form for writing comment and estimation for an event
 
-# form for writing comment and estimation for an event
+
 class CommentForm(forms.Form):
     content = forms.CharField(widget=forms.Textarea)
     estimation = forms.ChoiceField(choices=[
@@ -90,8 +93,8 @@ class PaymentForm(forms.Form):
     user_lastname = forms.CharField(required=False)
     ticket_price = forms.IntegerField(required=False)
 
-    credit_card_num = forms.IntegerField(required=True)
-    card_code = forms.IntegerField(validators=[MaxValueValidator(9999)], required=True)
+    credit_card_num = forms.IntegerField(min_value=0, required=True)
+    card_code = forms.IntegerField(min_value=0, validators=[MaxValueValidator(9999)], required=True)
     expiry_date = forms.DateField(input_formats=['%m/%Y'], required=True,
                                   widget=forms.DateInput(attrs={'placeholder': 'MM/YYYY'})
                                   )

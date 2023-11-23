@@ -9,30 +9,6 @@ import pytz
 from datetime import datetime
 
 
-# function that delete user from database by username
-def delete_user(request, username):
-    # get the user that we want to delete
-    try:
-        user_to_delete = RegisteredUser.objects.get(username=username)
-    except:
-        return HttpResponse("User does not exist")
-
-    # Check if user is authenticated and has admin rights
-    if request.user.is_authenticated and request.user.is_admin:
-        # Check if the user that we want to delete is admin
-        if user_to_delete.is_admin:
-            messages.warning(request, "You cannot delete another admin.")
-        elif user_to_delete == request.user:
-            messages.warning(request, "You cannot delete yourself.")
-        else:
-            user_to_delete.delete()
-            messages.success(request, f"User {username} has been successfully deleted.")
-    else:
-        messages.warning(request, "You do not have permission to delete users.")
-
-    return redirect("list_users_page")
-
-
 # function that require moderator rights
 def moderator_required(view_func):
     def _wrapper(request, *args, **kwargs):
@@ -64,6 +40,52 @@ def login_required(view_func):
             return HttpResponse("You need to login")
 
     return _wrapper
+
+
+# function that deletes user from database by username
+@moderator_required
+def delete_user(request, username):
+    # get the user that we want to delete
+    try:
+        user_to_delete = RegisteredUser.objects.get(username=username)
+    except:
+        return HttpResponse("User does not exist")
+
+    # Check if the user that we want to delete is admin
+    if user_to_delete.is_admin:
+        messages.warning(request, "You cannot delete another admin.")
+    elif user_to_delete == request.user:
+        messages.warning(request, "You cannot delete yourself.")
+    else:
+        user_to_delete.delete()
+        messages.success(request, f"User {username} has been successfully deleted.")
+    return redirect("list_users_page")
+
+
+# function that adds moder rights to a user by admin
+@admin_required
+def add_moder_rights(request, username):
+    try:
+        new_moder = RegisteredUser.objects.get(username=username)
+        new_moder.is_moderator = True
+        new_moder.save()
+        messages.success(request, f"User {username} has successfully got moderator rights.")
+    except:
+        return HttpResponse("User does not exist")
+    return redirect("list_users_page")
+
+
+# function that removes moder rights from a user by admin
+@admin_required
+def remove_moder_rights(request, username):
+    try:
+        moder = RegisteredUser.objects.get(username=username)
+        moder.is_moderator = False
+        moder.save()
+        messages.success(request, f"User {username} has successfully lose moderator rights.")
+    except:
+        return HttpResponse("User does not exist")
+    return redirect("list_users_page")
 
 
 # function that checks if events from the given list are ended
@@ -343,8 +365,7 @@ def leave_comment(request, event_id, username):
     return render(request, "event_page.html", context)
 
 
-# allow moderator/admin to delete comment of a user
-@moderator_required
+# allow moderator/admin to delete comment of a user and allow to user delete his own
 def delete_comment(request, event_id, username):
     EventEstimation.objects.filter(event__pk=event_id, user__username=username).delete()
     form = CommentForm()
