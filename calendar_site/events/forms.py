@@ -1,6 +1,7 @@
 from django import forms
 from django.core.validators import MaxValueValidator
-
+from datetime import date
+from datetime import datetime
 from events.models import EventPlace, Category
 
 
@@ -17,7 +18,7 @@ class RegisterForm(forms.Form):
     surname = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
     email = forms.EmailField()
-    phone_number = forms.CharField()
+    phone_number = forms.CharField(required=False)
 
 
 class CategoryForm(forms.Form):
@@ -46,11 +47,11 @@ class PlaceForm(forms.Form):
 # form for event creation
 class EventForm(forms.Form):
     name = forms.CharField()
-    start_date = forms.DateField()
-    end_date = forms.DateField()
+    start_date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}), initial=date.today())
+    end_date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}), initial=date.today())
     start_time = forms.TimeField(input_formats=['%H:%M'])
     end_time = forms.TimeField(input_formats=['%H:%M'])
-    capacity = forms.IntegerField()
+    capacity = forms.IntegerField(min_value=1)
     description = forms.CharField(widget=forms.Textarea)
     ticket_price = forms.IntegerField(min_value=0, required=False)
     payment_type = forms.CharField()

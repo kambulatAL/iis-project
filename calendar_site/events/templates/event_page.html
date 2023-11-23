@@ -141,7 +141,6 @@
                     <!-- Admin can delete moderators comment, but not other admins coment-->
                     <!-- Moderator can NOT delete other moderators comment nor other admins coment-->
                         {% if user.is_admin or user.is_moderator %}
-                            {% if comm.user.username != user.username %}      <!-- To check, if it is my commentary -->
                                 {% if not comm.user.is_admin %}               <!-- Cant delete comments of the admins-->
                                    <!--Moderator can NOT delete comments of the other moderators-->
                                     {% if user.is_moderator != comm.user.is_moderator  %}
@@ -150,8 +149,13 @@
                                         </div>
                                     {% endif %}
                                 {% endif %}
-                            {% endif %}
                         {% endif %}
+
+                    {% if comm.user.username == user.username  %}
+                     <div class="delete_comment">
+                         <a href="{% url 'del_page' event.pk comm.user.username %}" class="delete_button" >Delete comment</a>
+                     </div>
+                    {% endif %}
                         <div class="username">
                             User: {{ comm.user.username }}
                         </div>

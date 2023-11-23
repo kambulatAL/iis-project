@@ -17,37 +17,40 @@
 
 {% block content_block %}
 <div class="main_container">
-    <h3>Login</h3>
+    <h3>Login </h3>
     <div class="login_form">
         <form method="POST">
             {% csrf_token %} 
             <div class="form_input">
-                <label for="username">Username:</label>
-                <input type="text" name="username" id="username" required>
+                <label for="username">Username: *</label>
+                <input type="text" name="username" id="username" value="{{ user_n }}" required>
             </div>
             <div class="form_input">
-                <label for="name">Name:</label>
-                <input type="text" name="name" id="name" required>
+                <label for="name">Name: *</label>
+                <input type="text" name="name" id="name" value="{{ name }}" required>
             </div>
             <div class="form_input">
-                <label for="surname">Surname:</label>
-                <input type="text" name="surname" id="surname" required>
+                <label for="surname">Surname: *</label>
+                <input type="text" name="surname" id="surname" value="{{ surname }}" required>
             </div>
             <div class="form_input">
-                <label for="email">Email:</label>
+                <label for="email">Email: *</label>
                 <input type="email" name="email" id="email" required>
             </div>
             <div class="form_input">
                 <label for="phone_number">Phone number:</label>
-                <input type="tel" name="phone_number" id="phone_number">
+                <input type="tel" name="phone_number" id="phone_number" value="{{ phone_num }}">
             </div>
             <div class="form_input">
-                <label for="password">Password:</label>
+                <label for="password">Password: *</label>
                 <input type="password" name="password" id="password" required>
             </div>
 
             <button class="submit_button" type="submit">Register</button>
         </form>
+    <div class="reg_page">
+    <p>*  is for required fields</p>
+    </div>
     </div>
 
 

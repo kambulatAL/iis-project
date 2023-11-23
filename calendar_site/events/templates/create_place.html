@@ -26,20 +26,21 @@
             <form method="POST">
                 {% csrf_token %} 
                 <div class="form_class">
-                    <label for="place_name">Name of the place:</label>
+                    <label for="place_name">Name of the place: *</label>
                     <input type="text" id="place_name" name="place_name" required>
                 </div>
                 <div class="form_class">
-                    <label for="city">Name of the city:</label>
+                    <label for="city">Name of the city: *</label>
                     <input type="text" id="city" name="city" required>
                 </div>
                 <div class="form_class">
-                    <label for="street">Name of the street:</label>
+                    <label for="street">Name of the street: *</label>
                     <input type="text" id="street" name="street" required>
                 </div>
                 <div class="form_class">
                     <button class="submit_button" type="submit">Create Event Place</button>
                 </div>
+                 <p>*  is for required fields</p>
             </form>
         </div>
     </div>

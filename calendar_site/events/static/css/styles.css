@@ -329,6 +329,22 @@ footer a {
     margin: 10px 0;
 }
 
+.ad_rights_btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    font-weight: 700;
+    font-size: 17px;
+    padding: 10px 20px;
+    border-radius: 30px;
+    float: right;
+    transition-duration: 0.2s;
+}
+
+.ad_rights_btn:hover {
+    background-color: #317b35;
+    color: black;
+}
 
 .delete_button {
     background-color: #900000;
@@ -821,6 +837,11 @@ input[type="radio"]:checked {
     margin: 0;
     white-space: pre-line;
     word-wrap: break-word;
+}
+
+.reg_page p{
+    text-align: left;
+    color: white;
 }
 
 /*^^^ Maybe will change later*//* Maybe will change later*//* Maybe will change later*/

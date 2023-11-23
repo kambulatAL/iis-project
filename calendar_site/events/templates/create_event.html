@@ -26,27 +26,29 @@
             <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %} 
                 <div class="form_class">
-                    <label for="name">Name of the Event:</label>
-                    <input type="text" id="name" name="name" required>
+                    <label for="name">Name of the Event: *</label>
+                    <input type="text" id="name" name="name" value="{{ ev_name }}" required>
                     
                 </div>
                 
                 <div class="form_class">
-                    <label for="start_date">Start Date:</label>
-                    <input type="date" id="start_date" name="start_date" required>
-                    <label for="end_date">End Date:</label>
-                    <input type="date" id="end_date" name="end_date">
+                    <label >Start Date: *</label>
+<!--                    <input type="date" id="start_date" name="start_date" value="{{ form.initial.start_date }}" required>-->
+                    {{ form.start_date }}
+                    <label >End Date: *</label>
+                    {{ form.end_date }}
+<!--                    <input type="date" id="end_date" name="end_date" value="{{ form.initial.end_date }}">-->
                 </div>
                 
                 <div class="form_class">
-                    <label for="start_time">Start Time:</label>
-                    <input type="time" id="start_time" name="start_time" required>
-                    <label for="end_time">End Time:</label>
-                    <input type="time" id="end_time" name="end_time">
+                    <label for="start_time">Start Time: *</label>
+                    <input type="time" id="start_time" name="start_time"  required>
+                    <label for="end_time">End Time: *</label>
+                    <input type="time" id="end_time" name="end_time"  required>
                 </div>
 
                 <div class="form_class">
-                    <label for="place">Event Place:</label>
+                    <label for="place">Event Place: *</label>
                     <select id="place" name="place">
                         {% for place in event_places %}
                             {% if place.accepted %}
@@ -59,22 +61,22 @@
                 </div>
 
                 <div class="form_class">
-                    <label for="capacity">Capacity:</label>
-                    <input type="number" id="capacity" name="capacity" required>
+                    <label for="capacity">Capacity: *</label>
+                    <input type="number" id="capacity" name="capacity" value="{{ capacity }}" required>
                 </div>
 
                 <div class="form_class">
-                    <label for="description">Description:</label>
-                    <textarea id="description" name="description" rows="4"></textarea>
+                    <label for="description">Description: *</label>
+                    <textarea id="description" name="description" rows="4"  required>{{description}}</textarea>
                 </div>
 
                 <div class="form_class">
-                    <label for="categories">Categories:</label>
+                    <label for="categories">Categories: *</label>
                     {% for category in categories %}
                         {% if category.accepted  %}
                             {% if category.approved_by_mods %}
                                 <div class="category-checkbox">
-                                    <input type="checkbox" id="category_{{ category.id }}" name="categories" value="{{ category.id }}">
+                                    <input type="checkbox" id="category_{{ category.id }}" name="categories" value="{{ category.id }}" >
                                     <label for="category_{{ category.id }}"> {{ category.name }}</label>
                                 </div>
                             {% endif %}
@@ -97,7 +99,7 @@
                     Need to change forms and models.py, views.py for that
                 -->
                 <div class="form_class">
-                    <label>Is it paid or free?</label>
+                    <label>Is it paid or free? *</label>
                     <div class="radio">
                         <input type="radio" id="paid" name="payment_type" value="paid" onclick="showTicketPrice()" required>
                         <label for="paid">Paid</label>
@@ -109,8 +111,8 @@
                 </div>
 
                 <div class="form_class" id="ticket_price_field">
-                    <label for="ticket_price">Ticket Price:</label>
-                    <input type="number" id="ticket_price" name="ticket_price">
+                    <label for="ticket_price">Ticket Price: *</label>
+                    <input type="number" id="ticket_price" name="ticket_price" value="{{ ticket_price }}">
                 </div>
 
                 <script>
@@ -125,6 +127,7 @@
                 <div class="form_class">
                     <button class="submit_button" type="submit">Create Event</button>
                 </div>
+                <p>*  is for required fields</p>
             </form>
         </div>
 
