@@ -25,19 +25,19 @@
             <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %} 
                 <div class="form_class">
-                    <label for="eventname">Name of the Event:</label>
+                    <label for="eventname">Name of the Event: *</label>
                     <input type="text" id="eventname" name="evname" value="{{ eventname }}" readonly>
 
-                    <label for="userlogin">Login:</label>
+                    <label for="userlogin">Login: *</label>
                     <input type="text" id="userlogin" name="username" value="{{ username }}" readonly>
 
-                    <label for="user_firstname">First name:</label>
+                    <label for="user_firstname">First name: *</label>
                     <input type="text" id="user_firstname" name="fname" value="{{ user_firstname }}" readonly>
 
-                    <label for="user_lastname">Last name:</label>
+                    <label for="user_lastname">Last name: *</label>
                     <input type="text" id="user_lastname" name="lname" value="{{ user_lastname }}" readonly>
 
-                    <label for="ticket_price">Ticket price:</label>
+                    <label for="ticket_price">Ticket price: *</label>
                     <input type="text" id="ticket_price" name="tprice" value="{{ price }}" readonly>
 
                     <label for="credit_card_num">Credit card number: *</label>

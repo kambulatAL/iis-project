@@ -327,12 +327,11 @@ def make_payment(request, event_id, username):
         else:
             print("Form is not valid")
             print(form.errors)
+            form = PaymentForm()
             context["form"] = form
-            return render(request, "payment_page.html", context)
     else:
         form = PaymentForm()
-
-    context["form"] = form
+        context["form"] = form
     return render(request, "payment_page.html", context)
 
 
@@ -417,6 +416,14 @@ def create_event(request):
             elif payment_type == "paid" and ticket_price is None:
                 return HttpResponse("You need to specify ticket price")
 
+            if start_date > end_date:
+                context["form"] = form
+                context["ev_name"] = form.cleaned_data.get("name")
+                context["capacity"] = form.cleaned_data.get("capacity")
+                context["description"] = form.cleaned_data.get("description")
+                context["ticket_price"] = form.cleaned_data.get("ticket_price")
+                return render(request, "create_event.html", context)
+
             event = Event(
                 name=name,
                 start_date=start_date,
@@ -451,7 +458,6 @@ def create_event(request):
             context["capacity"] = form.cleaned_data.get("capacity")
             context["description"] = form.cleaned_data.get("description")
             context["ticket_price"] = form.cleaned_data.get("ticket_price")
-
             return render(request, "create_event.html", context)
     else:
         form = EventForm()

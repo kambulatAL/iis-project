@@ -23,15 +23,15 @@
             {% csrf_token %} 
             <div class="form_input">
                 <label for="username">Username: *</label>
-                <input type="text" name="username" id="username" value="{{ user_n }}" required>
+                <input type="text" name="username" id="username" value="{% if user_n  %}{{ user_n }} {% endif %}" required>
             </div>
             <div class="form_input">
                 <label for="name">Name: *</label>
-                <input type="text" name="name" id="name" value="{{ name }}" required>
+                <input type="text" name="name" id="name" value="{% if name  %}{{ name }} {% endif %}" required>
             </div>
             <div class="form_input">
                 <label for="surname">Surname: *</label>
-                <input type="text" name="surname" id="surname" value="{{ surname }}" required>
+                <input type="text" name="surname" id="surname" value="{% if user_n  %}{{ surname }} {% endif %}" required>
             </div>
             <div class="form_input">
                 <label for="email">Email: *</label>
@@ -39,7 +39,7 @@
             </div>
             <div class="form_input">
                 <label for="phone_number">Phone number:</label>
-                <input type="tel" name="phone_number" id="phone_number" value="{{ phone_num }}">
+                <input type="tel" name="phone_number" id="phone_number" value="{% if phone_num  %}{{ phone_num }} {% endif %}">
             </div>
             <div class="form_input">
                 <label for="password">Password: *</label>
