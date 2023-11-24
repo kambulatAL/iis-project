@@ -13,11 +13,12 @@ class LoginForm(forms.Form):
 
 # form for registration
 class RegisterForm(forms.Form):
-    username = forms.CharField(max_length=100, validators=[RegexValidator(regex=r'^[A-Za-z][A-Za-z0-9]+$',
-                                                                          message='Only letters and numbers are allowed for the "username" field.')])
-    name = forms.CharField(validators=[RegexValidator(regex=r'^[A-Za-z\s]+$',
+    username = forms.CharField(max_length=100, validators=[
+        RegexValidator(regex=r'^[A-Za-zČčĎďĚěŇňÓóŘřŠšŤťÚúŮůÝýŽž][A-Za-z0-9ČčĎďĚěŇňÓóŘřŠšŤťÚúŮůÝýŽž]+$',
+                       message='Only letters and numbers are allowed for the "username" field.')])
+    name = forms.CharField(validators=[RegexValidator(regex=r'^[A-Za-zČčĎďĚěŇňÓóŘřŠšŤťÚúŮůÝýŽž\s]+$',
                                                       message='Only letters are allowed for the "name" field.')])
-    surname = forms.CharField(validators=[RegexValidator(regex=r'^[A-Za-z\s]+$',
+    surname = forms.CharField(validators=[RegexValidator(regex=r'^[A-Za-zČčĎďĚěŇňÓóŘřŠšŤťÚúŮůÝýŽž\s]+$',
                                                          message='Only letters are allowed for the "surname" field.')])
     password = forms.CharField(widget=forms.PasswordInput)
     email = forms.EmailField(max_length=255)
@@ -25,7 +26,7 @@ class RegisterForm(forms.Form):
 
 
 class CategoryForm(forms.Form):
-    name = forms.CharField(validators=[RegexValidator(regex=r'^[A-Za-z\s]+$',
+    name = forms.CharField(validators=[RegexValidator(regex=r'^[A-Za-zČčĎďĚěŇňÓóŘřŠšŤťÚúŮůÝýŽž\s]+$',
                                                       message='Only letters are allowed for the "category name" field.')])
     subcategory = forms.ModelChoiceField(
         queryset=Category.objects.all(),
@@ -43,17 +44,17 @@ class CategoryForm(forms.Form):
 
 # form for place creation
 class PlaceForm(forms.Form):
-    city = forms.CharField(validators=[RegexValidator(regex=r'^[A-Za-z\s]+$',
+    city = forms.CharField(validators=[RegexValidator(regex=r'^[A-Za-zČčĎďĚěŇňÓóŘřŠšŤťÚúŮůÝýŽž\s]+$',
                                                       message='Only letters are allowed for the "city" field.')])
-    street = forms.CharField(validators=[RegexValidator(regex=r'^[A-Za-z][A-Za-z0-9\s]+$',
+    street = forms.CharField(validators=[RegexValidator(regex=r'^[A-Za-zČčĎďĚěŇňÓóŘřŠšŤťÚúŮůÝýŽž][A-Za-z0-9ČčĎďĚěŇňÓóŘřŠšŤťÚúŮůÝýŽž\s]+$',
                                                         message='Only letters and numbers are allowed for the "street" field.')])
-    place_name = forms.CharField(validators=[RegexValidator(regex=r'^[A-Za-z][A-Za-z0-9\s]+$',
+    place_name = forms.CharField(validators=[RegexValidator(regex=r'^[A-Za-zČčĎďĚěŇňÓóŘřŠšŤťÚúŮůÝýŽž][A-Za-z0-9ČčĎďĚěŇňÓóŘřŠšŤťÚúŮůÝýŽž\s]+$',
                                                             message='Only letters and numbers are allowed for the "place name" field.')])
 
 
 # form for event creation
 class EventForm(forms.Form):
-    name = forms.CharField(validators=[RegexValidator(regex=r'^[A-Za-z][A-Za-z0-9\s]+$',
+    name = forms.CharField(validators=[RegexValidator(regex=r'^[A-Za-zČčĎďĚěŇňÓóŘřŠšŤťÚúŮůÝýŽž][A-Za-z0-9ČčĎďĚěŇňÓóŘřŠšŤťÚúŮůÝýŽž\s]+$',
                                                       message='Only letters and numbers are allowed for the "event name" field.')])
     start_date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}), initial=date.today(),
                                  validators=[MinValueValidator(limit_value=date.today())])
