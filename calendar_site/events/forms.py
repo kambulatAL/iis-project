@@ -44,18 +44,21 @@ class CategoryForm(forms.Form):
 
 # form for place creation
 class PlaceForm(forms.Form):
-    city = forms.CharField(validators=[RegexValidator(regex=r'^[A-Za-zČčĎďĚěŇňÓóŘřŠšŤťÚúŮůÝýŽž\s]+$',
+    city = forms.CharField(validators=[RegexValidator(regex=r'^[A-Za-zÁáČčĎďÉéĚěÍíŇňÓóŘřŠšŤťÚúŮůÝýŽž\s]+$',
                                                       message='Only letters are allowed for the "city" field.')])
-    street = forms.CharField(validators=[RegexValidator(regex=r'^[A-Za-zČčĎďĚěŇňÓóŘřŠšŤťÚúŮůÝýŽž][A-Za-z0-9ČčĎďĚěŇňÓóŘřŠšŤťÚúŮůÝýŽž\s]+$',
-                                                        message='Only letters and numbers are allowed for the "street" field.')])
-    place_name = forms.CharField(validators=[RegexValidator(regex=r'^[A-Za-zČčĎďĚěŇňÓóŘřŠšŤťÚúŮůÝýŽž][A-Za-z0-9ČčĎďĚěŇňÓóŘřŠšŤťÚúŮůÝýŽž\s]+$',
-                                                            message='Only letters and numbers are allowed for the "place name" field.')])
+    street = forms.CharField(validators=[
+        RegexValidator(regex=r'^[A-Za-zÁáČčĎďÉéĚěÍíŇňÓóŘřŠšŤťÚúŮůÝýŽž][A-Za-z0-9ÁáČčĎďÉéĚěÍíŇňÓóŘřŠšŤťÚúŮůÝýŽž\s]+$',
+                       message='Only letters and numbers are allowed for the "street" field.')])
+    place_name = forms.CharField(validators=[
+        RegexValidator(regex=r'^[A-Za-zÁáČčĎďÉéĚěÍíŇňÓóŘřŠšŤťÚúŮůÝýŽž][A-Za-z0-9ÁáČčĎďÉéĚěÍíŇňÓóŘřŠšŤťÚúŮůÝýŽž\s]+$',
+                       message='Only letters and numbers are allowed for the "place name" field.')])
 
 
 # form for event creation
 class EventForm(forms.Form):
-    name = forms.CharField(validators=[RegexValidator(regex=r'^[A-Za-zČčĎďĚěŇňÓóŘřŠšŤťÚúŮůÝýŽž][A-Za-z0-9ČčĎďĚěŇňÓóŘřŠšŤťÚúŮůÝýŽž\s]+$',
-                                                      message='Only letters and numbers are allowed for the "event name" field.')])
+    name = forms.CharField(validators=[
+        RegexValidator(regex=r'^[A-Za-zÁáČčĎďÉéĚěÍíŇňÓóŘřŠšŤťÚúŮůÝýŽž][A-Za-z0-9ÁáČčĎďÉéĚěÍíŇňÓóŘřŠšŤťÚúŮůÝýŽž\s]+$',
+                       message='Only letters and numbers are allowed for the "event name" field.')])
     start_date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}), initial=date.today(),
                                  validators=[MinValueValidator(limit_value=date.today())])
     end_date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}), initial=date.today(),
