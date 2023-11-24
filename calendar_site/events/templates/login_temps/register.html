@@ -31,11 +31,11 @@
             </div>
             <div class="form_input">
                 <label for="surname">Surname: *</label>
-                <input type="text" name="surname" id="surname" value="{% if user_n  %}{{ surname }} {% endif %}" required>
+                <input type="text" name="surname" id="surname" value="{% if surname %} {{ surname }} {% endif %}" required>
             </div>
             <div class="form_input">
                 <label for="email">Email: *</label>
-                <input type="email" name="email" id="email" required>
+                <input type="email" name="email" id="email" value="{% if email %} {{ email }} {% endif %}" required>
             </div>
             <div class="form_input">
                 <label for="phone_number">Phone number:</label>

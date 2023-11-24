@@ -160,6 +160,12 @@ def list_categories(request):
 # allows a user to create a place
 @login_required
 def create_place(request):
+    places = EventPlace.objects.all()
+    context = {
+        "title": "Create place page",
+        "places": places
+    }
+
     if request.method == 'POST':
         form = PlaceForm(request.POST)
         if form.is_valid():
@@ -179,15 +185,15 @@ def create_place(request):
         else:
             print("Form is not valid")
             print(form.errors)
+            context["form"] = form
+            context["city"] = form.cleaned_data.get("city")
+            context["street"] = form.cleaned_data.get("street")
+            context["place_name"] = form.cleaned_data.get("place_name")
+            return render(request, "create_place.html", context)
+
     else:
         form = PlaceForm()
-
-    places = EventPlace.objects.all()
-    context = {
-        "title": "Create place page",
-        "form": form,
-        "places": places
-    }
+        context["form"] = form
 
     return render(request, "create_place.html", context)
 
@@ -628,6 +634,7 @@ def register_view(request):
             print(form.errors)
             context["form"] = form
             context["user_n"] = form.cleaned_data.get("username")
+            context["email"] = form.cleaned_data.get("email")
             context["name"] = form.cleaned_data.get("name")
             context["surname"] = form.cleaned_data.get("surname")
             context["phone_num"] = form.cleaned_data.get("phone_number")
