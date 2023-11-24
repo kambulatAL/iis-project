@@ -14,11 +14,11 @@ class LoginForm(forms.Form):
 # form for registration
 class RegisterForm(forms.Form):
     username = forms.CharField(max_length=100, validators=[
-        RegexValidator(regex=r'^[A-Za-zČčĎďĚěŇňÓóŘřŠšŤťÚúŮůÝýŽž][A-Za-z0-9ČčĎďĚěŇňÓóŘřŠšŤťÚúŮůÝýŽž]+$',
+        RegexValidator(regex=r'^[A-Za-z][A-Za-z0-9]+$',
                        message='Only letters and numbers are allowed for the "username" field.')])
-    name = forms.CharField(validators=[RegexValidator(regex=r'^[A-Za-zČčĎďĚěŇňÓóŘřŠšŤťÚúŮůÝýŽž\s]+$',
+    name = forms.CharField(validators=[RegexValidator(regex=r'^[A-Za-zÁáČčĎďÉéĚěÍíŇňÓóŘřŠšŤťÚúŮůÝýŽž\s]+$',
                                                       message='Only letters are allowed for the "name" field.')])
-    surname = forms.CharField(validators=[RegexValidator(regex=r'^[A-Za-zČčĎďĚěŇňÓóŘřŠšŤťÚúŮůÝýŽž\s]+$',
+    surname = forms.CharField(validators=[RegexValidator(regex=r'^[A-Za-zÁáČčĎďÉéĚěÍíŇňÓóŘřŠšŤťÚúŮůÝýŽž\s]+$',
                                                          message='Only letters are allowed for the "surname" field.')])
     password = forms.CharField(widget=forms.PasswordInput)
     email = forms.EmailField(max_length=255)
@@ -26,7 +26,7 @@ class RegisterForm(forms.Form):
 
 
 class CategoryForm(forms.Form):
-    name = forms.CharField(validators=[RegexValidator(regex=r'^[A-Za-zČčĎďĚěŇňÓóŘřŠšŤťÚúŮůÝýŽž\s]+$',
+    name = forms.CharField(validators=[RegexValidator(regex=r'^[A-Za-zÁáČčĎďÉéĚěÍíŇňÓóŘřŠšŤťÚúŮůÝýŽž\s]+$',
                                                       message='Only letters are allowed for the "category name" field.')])
     subcategory = forms.ModelChoiceField(
         queryset=Category.objects.all(),
