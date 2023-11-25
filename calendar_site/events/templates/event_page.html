@@ -144,11 +144,13 @@
                         {% if user.is_admin or user.is_moderator %}
                                 {% if not comm.user.is_admin %}               <!-- Cant delete comments of the admins-->
                                    <!--Moderator can NOT delete comments of the other moderators-->
-                                    {% if user.is_moderator != comm.user.is_moderator  %}
+                                    {% if user.is_moderator and comm.user.is_moderator  %}
+                                    {% else %}
                                         <div class="delete_comment">
                                             <a href="{% url 'del_page' event.pk comm.user.username %}" class="delete_button" >Delete comment</a>
                                         </div>
                                     {% endif %}
+
                                 {% endif %}
                         {% endif %}
 
