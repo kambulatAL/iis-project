@@ -53,8 +53,8 @@
                     {% for place in event_places %}
                     {% if place.accepted %}
                     {% if place.approved_by_mods %}
-                    <option value="{{ place.place_id }}" selected="selected">{{ place.city }} - {{ place.street }}: {{
-                        place.place_name }}
+                    <option value="{{ place.place_id }}" selected="selected">{{ place.city }} - {{ place.street }}
+                        {% if place.place_name %}: {{ place.place_name }} {% endif %}
                     </option>
                     {% endif %}
                     {% endif %}

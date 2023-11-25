@@ -396,8 +396,7 @@ def create_event(request):
         "event_places": event_places,
         "categories": categires
     }
-    # initial_data = {"start_date": date.today(), "end_data": date.today(), "start_time": datetime.now().time(),
-    #                 "end_time": datetime.now().time()}
+
     if request.method == 'POST':
         form = EventForm(request.POST, request.FILES)
         if form.is_valid():
