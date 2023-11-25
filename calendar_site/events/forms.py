@@ -9,7 +9,13 @@ from events.models import EventPlace, Category
 class LoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
-
+    
+# form for user to change his info
+class SettingsForm(forms.Form):
+    email = forms.EmailField(max_length=255, required=False)
+    phone_number = forms.IntegerField(max_value=999999999999, required=False)
+    old_password = forms.CharField(widget=forms.PasswordInput, required=False)
+    password = forms.CharField(widget=forms.PasswordInput, required=False)
 
 # form for registration
 class RegisterForm(forms.Form):

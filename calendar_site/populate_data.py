@@ -1,15 +1,16 @@
 from events.models import RegisteredUser, Worker, Category, EventPlace, Event, EventEstimation
+from datetime import datetime
 
-RegisteredUser.create_user('xblanco00', 'Marimba', 'Blanco', 'blanco@work.gmail', 'blanco_phone')
-RegisteredUser.create_user('user_login', 'user_name', 'user_surname', 'user_email', 'user_phone')
-RegisteredUser.create_user('xassat00', 'Dias', 'Assatulla', 'xassat@work.gmail', '+420 777 777 777', is_admin=True)
-RegisteredUser.create_user('xapada00', 'Parad', 'Moshi-Moshi', 'xapada@work.gmail', '+420 333 777 777',
+RegisteredUser.create_user('xblanco00', 'Marimba', 'Blanco', 'blanco@work.gmail', None)
+RegisteredUser.create_user('user_login', 'user_name', 'user_surname', 'user_email', None)
+RegisteredUser.create_user('xassat00', 'Dias', 'Assatulla', 'xassat@work.gmail', '420777777777', is_admin=True)
+RegisteredUser.create_user('xapada00', 'Parad', 'Moshi-Moshi', 'xapada@work.gmail', '420333777777',
                            is_moderator=True)
-RegisteredUser.create_user('moder_login', 'Moder', 'Moderovich', 'email@email.cz', '+420 333 777 777',
+RegisteredUser.create_user('moder_login', 'Moder', 'Moderovich', 'email@email.cz', '420333777777',
                            is_moderator=True)
 
 # Create default categories
-Category.objects.create(
+category = Category.objects.create(
     name='Music',
     accepted=Worker.objects.get(worker=RegisteredUser.objects.get(username='xassat00')),
     approved_by_mods=True
@@ -27,10 +28,23 @@ Category.objects.create(
     approved_by_mods=True
 )
 
-Category.objects.create(
+category1 = Category.objects.create(
     name='Movies',
     accepted=Worker.objects.get(worker=RegisteredUser.objects.get(username='xassat00')),
     approved_by_mods=True
+)
+
+Category.objects.create(
+    name='Concert',
+    accepted=Worker.objects.get(worker=RegisteredUser.objects.get(username='xassat00')),
+    approved_by_mods=True,
+    subcategory = category
+)
+
+not_approved_category = Category.objects.create(
+    name='Series',
+    approved_by_mods=False,
+    subcategory = category1
 )
 
 # Create event places
@@ -67,6 +81,14 @@ hrdc_krl = EventPlace.objects.create(
     created=RegisteredUser.objects.get(username='user_login'),
     accepted=Worker.objects.get(worker=RegisteredUser.objects.get(username='xassat00')),
     approved_by_mods=True
+)
+
+not_approved_place = EventPlace.objects.create(
+    city='Brno',
+    street='Štefánikova 24',
+    place_name='Fléda',
+    created=RegisteredUser.objects.get(username='xblanco00'),
+    approved_by_mods=False
 )
 
 # Create event
@@ -142,7 +164,7 @@ event3 = Event.objects.create(
     approved_by_mods=True
 )
 event3.registered_people.add(RegisteredUser.objects.get(username='xblanco00'))
-event3.categories.add(Category.objects.get(name='Music'))
+event3.categories.add(Category.objects.get(name='Concert'))
 event3.save()
 
 event4 = Event.objects.create(
@@ -171,3 +193,57 @@ event4 = Event.objects.create(
 event4.registered_people.add(RegisteredUser.objects.get(username='xblanco00'))
 event4.categories.add(Category.objects.get(name='Museum'))
 event4.save()
+
+event5 = Event.objects.create(
+    name="Brno – řízená degustace vín",
+    start_date="2023-10-27",
+    end_date="2023-10-28",
+    start_time="08:00",
+    end_time="18:00",
+    photo="images/events/23/11/22/vina.jpg",
+    capacity=25,
+    ticket_price=10,
+    description="Zveme Vás na řízenou degustaci vín s možností objednávky za zvýhodněné ceny pro tuto akci."
+                "Vína Vám budou představena přímo vinařem"
+                "Po ukončení degustace si můžete objednat vína z naší sklepní nabídky a ochutnat náš tatarský biftek.",
+    created=RegisteredUser.objects.get(username='user_login'),
+    accepted=Worker.objects.get(worker=RegisteredUser.objects.get(username='xassat00')),
+    approved_by_mods=True
+)
+event5.categories.add(Category.objects.get(name='Food'))
+event5.event_place = plz
+event5.registered_people.add(RegisteredUser.objects.get(username='user_login'))
+event5.registered_people.add(RegisteredUser.objects.get(username='xblanco00'))
+event5.registered_people.add(RegisteredUser.objects.get(username='xapada00'))
+event5.registered_people.add(RegisteredUser.objects.get(username='moder_login'))
+event5.save()
+
+not_approved_event = Event.objects.create(
+    name="Beethoven",
+    start_date="2023-01-27",
+    end_date="2023-01-27",
+    start_time="18:00",
+    end_time="20:00",
+    photo="images/events/23/11/22/beethoven.jpg",
+    capacity=600,
+    ticket_price=25,
+    description="Společný projekt souborů baletu, opery a orchestru NdB je velkolepou oslavou Beethovenova" 
+                "génia nastudovanou ke 250. výročí jeho narození. Beethoven Mária Radačovského nabízí divákovi"
+                "nejen zážitek baletního představení, ale svou hudební dramaturgií s živou intepretací orchestru"
+                "a pěveckého sboru vrchovatě naplňuje pojem hudebně dramatického divadelního tvaru.",
+    created=RegisteredUser.objects.get(username='xblanco00'),
+    approved_by_mods=False
+)
+not_approved_event.categories.add(Category.objects.get(name='Concert'))
+not_approved_event.event_place = brn
+not_approved_event.save()
+
+## Create comment
+
+comment = EventEstimation.objects.create(
+    event=event5,
+    user=RegisteredUser.objects.get(username='xblanco00'),
+    estimation=5,
+    comment="Bylo to výtečné"
+)
+comment.save()

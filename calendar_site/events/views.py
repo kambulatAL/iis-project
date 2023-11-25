@@ -2,7 +2,7 @@ from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from events.models import RegisteredUser, EventPlace, Event, Worker, Category, EventEstimation, TicketPayment
-from .forms import LoginForm, RegisterForm, EventForm, CommentForm, CategoryForm, PlaceForm, PaymentForm
+from .forms import LoginForm, SettingsForm, RegisterForm, EventForm, CommentForm, CategoryForm, PlaceForm, PaymentForm
 from django.contrib import messages
 from datetime import date
 import pytz
@@ -599,6 +599,46 @@ def login_view(request):
 
     return render(request, "login_temps/login.html", {"title": "Login page", "form": form})
 
+# allows to edit info about user by himself
+@login_required
+def settings_view(request):
+    context = {"title": "Settings page", "email": request.user.email, 
+               "phone_number": request.user.phone_number}
+
+    if request.method == 'POST':
+        form = SettingsForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get("email")
+            phone_number = form.cleaned_data.get("phone_number")
+            old_password = form.cleaned_data.get("old_password")
+            password = form.cleaned_data.get("password")
+            flag = False
+            user = request.user
+            if user.email != email:
+                user.email = email
+                flag = True
+            if user.phone_number != phone_number and user.phone_number != str(phone_number):
+                user.phone_number = phone_number
+                flag = True
+            if old_password and password:
+                user = authenticate(request, username=user.username, password=old_password)
+                if user is not None:
+                    user.set_password(password)
+                    login(request, user)
+                    flag = True
+            if flag:
+                user.save()
+                messages.success(request, f"Your data was successfully changed.")
+                return redirect("home_page")
+        else:
+            print(form.errors)
+            context["form"] = form
+            return render(request, "login_temps/settings.html", context)
+    else:
+        form = SettingsForm()
+        context["form"] = form
+
+    return render(request, "login_temps/settings.html", context)
 
 # allows to create a new account for a new user from a corresponding page
 def register_view(request):

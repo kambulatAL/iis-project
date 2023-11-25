@@ -1,0 +1,63 @@
+{%extends 'base.html'%}
+{% load static %}
+
+{% block header_block %}
+<header>
+    <a href="{% url 'home_page' %}" class="logo_header">Calendar</a>
+    <div class="nav">
+        {% if user.is_authenticated %}
+        {% if user.is_moderator or user.is_admin %}
+        <a href="{% url 'admin_page' %}">Admin Panel</a>
+        {% endif %}
+        <a href="{% url 'home_page' %}">Home</a>
+        <a href="{% url 'logout_page' %}">Log Out</a>
+        {% else %}
+        <a href="{% url 'login_page' %}">Login</a>
+        <a href="{% url 'register_page' %}">Sign Up</a>
+        {% endif %}
+    </div>
+</header>
+{% endblock header_block %}
+
+{% block category_block %}
+{% endblock category_block %}
+
+{% block content_block %}
+<div class="main_container">
+    <h3>Settings</h3>
+    <div class="settings_form">
+        <form method="POST">
+            {% csrf_token %} 
+            <div class="form_input">
+                <label for="username">Username: </label>{{ user.username }}<br>
+            </div>
+            <div class="form_input">
+                <label for="name">Name: </label>{{ user.first_name }}<br>
+            </div>
+            <div class="form_input">
+                <label for="surname">Surname: </label>{{ user.last_name }}<br>
+            </div>
+            <div class="form_input">
+                <label for="email">Email:</label><br>
+                <input type="email" name="email" id="email" value="{% if email %} {{ email }} {% endif %}">
+            </div>
+            <div class="form_input">
+                <label for="phone_number">Phone number:</label>
+                <input type="tel" name="phone_number" id="phone_number" value="{% if phone_number  %}{{ phone_number }} {% endif %}">
+            </div>
+            <div class="form_input">
+                <label for="old_password">Old password:</label>
+                <input type="password" name="old_password" id="old_password" ><br>
+                <label for="password">New password:</label>
+                <input type="password" name="password" id="password" >
+            </div>
+
+            <button class="submit_button" type="submit">Change</button>
+        </form>
+    <div class="settings_page">
+    </div>
+    </div>
+
+
+</div>
+{% endblock content_block %}
