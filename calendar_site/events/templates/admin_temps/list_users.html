@@ -16,8 +16,6 @@
 </div>
 {% endif %}
 
-
-
         <h3>Users</h3>
             <ul>
                 {% for user in users %}
@@ -28,8 +26,16 @@
                         <strong>Name:</strong> {{ user.first_name }}<br>
                         <strong>Surname:</strong> {{ user.last_name }}<br>
                     </div>
+                    {% if not user.is_admin %}
+                        {% if not user.is_moderator %}
+                            <a href="{% url 'add_moder_rights' user.username %}" class="ad_rights_btn"> give moder rights</a>
+                        {% else %}
+                            <a href="{% url 'remove_moder_rights' user.username %}" class="delete_button"> take moder rights</a>
+                        {% endif %}
+                    {% endif %}
                     <a href="{% url 'delete_user_page' user.username %}" class="delete_button">Delete User</a>
-                    
+
+
                 </li>
                 {% endfor %}
             </ul>

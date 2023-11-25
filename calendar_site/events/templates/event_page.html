@@ -11,6 +11,7 @@
         <a href="{% url 'admin_page' %}">Admin Panel</a>
         {% endif %}
         <a href="{% url 'my_calendar_page' %}">My Calendar</a>
+        <a href="{% url 'settings_page' %}">Settings</a>
         <a href="{% url 'logout_page' %}">Log Out</a>
         {% else %}
         <a href="{% url 'login_page' %}">Login</a>
@@ -55,6 +56,9 @@
 
     <div class="event_page_information"> 
         <h4>Location:   {{ event.event_place.city }} - {{event.event_place.street}}</h4>
+        {% if event.event_place.place_name %}
+        <h4>Place name:     {{ event.event_place.place_name }} </h4>
+        {% endif %}
         <h4>Date:       {{ event.start_date }} - {{ event.end_date }}</h4>
         <h4>Start:      {{ event.start_time }} - {{ event.end_time }}</h4>
         <h4>Capacity:   {{ event.capacity }}</h4>
@@ -138,7 +142,6 @@
                     <!-- Admin can delete moderators comment, but not other admins coment-->
                     <!-- Moderator can NOT delete other moderators comment nor other admins coment-->
                         {% if user.is_admin or user.is_moderator %}
-                            {% if comm.user.username != user.username %}      <!-- To check, if it is my commentary -->
                                 {% if not comm.user.is_admin %}               <!-- Cant delete comments of the admins-->
                                    <!--Moderator can NOT delete comments of the other moderators-->
                                     {% if user.is_moderator != comm.user.is_moderator  %}
@@ -147,8 +150,13 @@
                                         </div>
                                     {% endif %}
                                 {% endif %}
-                            {% endif %}
                         {% endif %}
+
+                    {% if comm.user.username == user.username  %}
+                     <div class="delete_comment">
+                         <a href="{% url 'del_page' event.pk comm.user.username %}" class="delete_button" >Delete comment</a>
+                     </div>
+                    {% endif %}
                         <div class="username">
                             User: {{ comm.user.username }}
                         </div>

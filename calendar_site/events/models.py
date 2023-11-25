@@ -3,7 +3,6 @@ from django import forms
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 
-
 default_pass = 'user_pass'
 
 
@@ -12,7 +11,7 @@ class RegisteredUser(AbstractUser):
     username = models.CharField(max_length=100, primary_key=True)
     password = models.CharField(max_length=100)
     email = models.EmailField(max_length=255)
-    phone_number = models.CharField(max_length=20)
+    phone_number = models.CharField(max_length=20, null=True)
 
     is_moderator = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
@@ -73,8 +72,6 @@ class Category(models.Model):
     accepted = models.ForeignKey(Worker, on_delete=models.CASCADE, null=True, blank=True,
                                  related_name='category_accepted')
     approved_by_mods = models.BooleanField(default=False)
-
-    
 
 
 # table represents event

@@ -10,6 +10,7 @@
         <a href="{% url 'admin_page' %}">Admin Panel</a>
         {% endif %}
         <a href="{% url 'my_calendar_page' %}">My Calendar</a>
+        <a href="{% url 'settings_page' %}">Settings</a>
         <a href="{% url 'logout_page' %}">Log Out</a>
         {% else %}
         <a href="{% url 'login_page' %}">Login</a>
@@ -84,6 +85,9 @@
             <h4>Event: <a href="{% url 'event_page' event.pk %}">{{ event.name }}</a></h4>
             <p>Date: {{ event.start_date }} - {{ event.end_date }}</p>
             <p>Location: {{ event.event_place.city }} - {{event.event_place.street}}</p>
+            {% if event.event_place.place_name %}
+            <p>Place name: {{ event.event_place.place_name }} </p>
+            {% endif %}
             <p>Capacity: {{ event.capacity }}</p>
         </div>
         <div class="event-details-more">

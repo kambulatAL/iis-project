@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure--=c!^ok6j$@l%j6oydvklsx@b81=-$wwh6t$=bho_4hgu@h-=1'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '34.107.16.141']
 
 
 # Application definition
@@ -76,12 +76,12 @@ WSGI_APPLICATION = 'calendar_site.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'calendar_events_db',
-        'USER': 'events_user',
-        'PASSWORD': 'events_password',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': os.environ.get("SQL_ENGINE", default='django.db.backends.postgresql'),
+        'NAME': os.environ.get("SQL_DATABASE", default='calendar_events_db'),
+        'USER': os.environ.get("SQL_USER", default='events_user'),
+        'PASSWORD': os.environ.get("SQL_PASSWORD", default='events_password'),
+        'HOST': os.environ.get("SQL_HOST", default='localhost'),
+        'PORT': os.environ.get("SQL_PORT", default='5432'),
     }
 }
 
@@ -123,6 +123,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = []
+SECURE_CROSS_ORIGIN_OPENER_POLICY = None
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

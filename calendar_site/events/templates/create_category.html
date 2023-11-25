@@ -11,6 +11,7 @@
                 {% endif %}
                 <a href="{% url 'home_page' %}">Home</a>
                 <a href="{% url 'my_calendar_page' %}">My Calendar</a>
+                <a href="{% url 'settings_page' %}">Settings</a>
                 <a href="{% url 'logout_page' %}">Log Out</a>
         </div>
     </header>
@@ -25,7 +26,7 @@
             <form method="POST">
                 {% csrf_token %} 
                 <div class="form_class">
-                    <label for="name">Name of the category:</label>
+                    <label for="name">Name of the category: *</label>
                     <input type="text" id="name" name="name" required>
                 </div>
 
@@ -46,6 +47,7 @@
                 <div class="form_class">
                     <button class="submit_button" type="submit">Create Category</button>
                 </div>
+                 <p>*  is for required fields</p>
             </form>
         </div>
 <!--

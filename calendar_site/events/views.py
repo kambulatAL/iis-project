@@ -2,33 +2,11 @@ from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from events.models import RegisteredUser, EventPlace, Event, Worker, Category, EventEstimation, TicketPayment
-from .forms import LoginForm, RegisterForm, EventForm, CommentForm, CategoryForm, PlaceForm, PaymentForm
+from .forms import LoginForm, SettingsForm, RegisterForm, EventForm, CommentForm, CategoryForm, PlaceForm, PaymentForm
 from django.contrib import messages
+from datetime import date
+import pytz
 from datetime import datetime
-
-
-# function that delete user from database by username
-def delete_user(request, username):
-    # get the user that we want to delete
-    try:
-        user_to_delete = RegisteredUser.objects.get(username=username)
-    except:
-        return HttpResponse("User does not exist")
-
-    # Check if user is authenticated and has admin rights
-    if request.user.is_authenticated and request.user.is_admin:
-        # Check if the user that we want to delete is admin
-        if user_to_delete.is_admin:
-            messages.warning(request, "You cannot delete another admin.")
-        elif user_to_delete == request.user:
-            messages.warning(request, "You cannot delete yourself.")
-        else:
-            user_to_delete.delete()
-            messages.success(request, f"User {username} has been successfully deleted.")
-    else:
-        messages.warning(request, "You do not have permission to delete users.")
-
-    return redirect("list_users_page")
 
 
 # function that require moderator rights
@@ -64,15 +42,62 @@ def login_required(view_func):
     return _wrapper
 
 
+# function that deletes user from database by username
+@moderator_required
+def delete_user(request, username):
+    # get the user that we want to delete
+    try:
+        user_to_delete = RegisteredUser.objects.get(username=username)
+    except:
+        return HttpResponse("User does not exist")
+
+    # Check if the user that we want to delete is admin
+    if user_to_delete.is_admin:
+        messages.warning(request, "You cannot delete another admin.")
+    elif user_to_delete == request.user:
+        messages.warning(request, "You cannot delete yourself.")
+    else:
+        user_to_delete.delete()
+        messages.success(request, f"User {username} has been successfully deleted.")
+    return redirect("list_users_page")
+
+
+# function that adds moder rights to a user by admin
+@admin_required
+def add_moder_rights(request, username):
+    try:
+        new_moder = RegisteredUser.objects.get(username=username)
+        new_moder.is_moderator = True
+        new_moder.save()
+        messages.success(request, f"User {username} has successfully got moderator rights.")
+    except:
+        return HttpResponse("User does not exist")
+    return redirect("list_users_page")
+
+
+# function that removes moder rights from a user by admin
+@admin_required
+def remove_moder_rights(request, username):
+    try:
+        moder = RegisteredUser.objects.get(username=username)
+        moder.is_moderator = False
+        moder.save()
+        messages.success(request, f"User {username} has successfully lose moderator rights.")
+    except:
+        return HttpResponse("User does not exist")
+    return redirect("list_users_page")
+
+
 # function that checks if events from the given list are ended
 def event_is_ended(events):
     events_ended = []
+    eastern = pytz.timezone('Europe/Prague')
 
     for event in events:
         event_end_date = event.end_date.strftime('%Y-%m-%d')
         event_end_time = event.end_time.strftime('%H:%M:%S')
-        today = datetime.now().date().strftime("%Y-%m-%d")
-        today_time = datetime.today().time().strftime("%H:%M:%S")
+        today = datetime.now(eastern).date().strftime("%Y-%m-%d")
+        today_time = datetime.now(eastern).time().strftime("%H:%M:%S")
         ended = (event_end_date == today and today_time > event_end_time) or event_end_date < today
         events_ended.append(ended)
     return events_ended
@@ -135,6 +160,12 @@ def list_categories(request):
 # allows a user to create a place
 @login_required
 def create_place(request):
+    places = EventPlace.objects.all()
+    context = {
+        "title": "Create place page",
+        "places": places
+    }
+
     if request.method == 'POST':
         form = PlaceForm(request.POST)
         if form.is_valid():
@@ -154,15 +185,15 @@ def create_place(request):
         else:
             print("Form is not valid")
             print(form.errors)
+            context["form"] = form
+            context["city"] = form.cleaned_data.get("city")
+            context["street"] = form.cleaned_data.get("street")
+            context["place_name"] = form.cleaned_data.get("place_name")
+            return render(request, "create_place.html", context)
+
     else:
         form = PlaceForm()
-
-    places = EventPlace.objects.all()
-    context = {
-        "title": "Create place page",
-        "form": form,
-        "places": places
-    }
+        context["form"] = form
 
     return render(request, "create_place.html", context)
 
@@ -255,17 +286,17 @@ def filter_by_category(request, cat_id):
     events: Event = Event.objects.all()
     categories = Category.objects.all()
 
-    selected_cat: Category = Category.objects.get(pk=cat_id)
+    subcats_arr = [Category.objects.filter(subcategory__pk=cat_id)]
+    for subcats in subcats_arr:
+        for cat in subcats:
+            subcats_arr.append(Category.objects.filter(subcategory__pk=cat.pk))
 
-    subcats = []
-
-    while selected_cat is not None:
-        subcats.append(selected_cat.pk)
-        selected_cat = selected_cat.subcategory
+    subcats_arr = [i.pk for arr in subcats_arr for i in arr]
+    subcats_arr.append(cat_id)
 
     filtered_events = []
     for event in events:
-        [filtered_events.append(event) for cat in event.categories.all() if cat.pk in subcats]
+        [filtered_events.append(event) for cat in event.categories.all() if cat.pk in subcats_arr]
 
     events_ended = event_is_ended(filtered_events)
     return render(request, "index.html",
@@ -278,6 +309,17 @@ def make_payment(request, event_id, username):
     event: Event = Event.objects.get(pk=event_id)
     user: RegisteredUser = RegisteredUser.objects.get(pk=username)
     ticket_price = event.ticket_price
+
+    eventname = event.name
+    user_firstname = user.first_name
+    user_lastname = user.last_name
+    context = {
+        "eventname": eventname,
+        "username": username,
+        "user_firstname": user_firstname,
+        "user_lastname": user_lastname,
+        "price": ticket_price,
+    }
     if request.method == 'POST':
         form = PaymentForm(request.POST)
         if form.is_valid():
@@ -291,20 +333,11 @@ def make_payment(request, event_id, username):
         else:
             print("Form is not valid")
             print(form.errors)
+            form = PaymentForm()
+            context["form"] = form
     else:
         form = PaymentForm()
-
-    eventname = event.name
-    user_firstname = user.first_name
-    user_lastname = user.last_name
-    context = {
-        "eventname": eventname,
-        "username": username,
-        "user_firstname": user_firstname,
-        "user_lastname": user_lastname,
-        "price": ticket_price,
-        "form": form,
-    }
+        context["form"] = form
     return render(request, "payment_page.html", context)
 
 
@@ -337,8 +370,7 @@ def leave_comment(request, event_id, username):
     return render(request, "event_page.html", context)
 
 
-# allow moderator/admin to delete comment of a user
-@moderator_required
+# allow moderator/admin to delete comment of a user and allow to user delete his own
 def delete_comment(request, event_id, username):
     EventEstimation.objects.filter(event__pk=event_id, user__username=username).delete()
     form = CommentForm()
@@ -357,6 +389,15 @@ def list_enrolled_users(request, event_id):
 # allows a user to create an event
 @login_required
 def create_event(request):
+    event_places = EventPlace.objects.all()
+    categires = Category.objects.all()
+    context = {
+        "title": "Create event page",
+        "event_places": event_places,
+        "categories": categires
+    }
+    # initial_data = {"start_date": date.today(), "end_data": date.today(), "start_time": datetime.now().time(),
+    #                 "end_time": datetime.now().time()}
     if request.method == 'POST':
         form = EventForm(request.POST, request.FILES)
         if form.is_valid():
@@ -380,6 +421,14 @@ def create_event(request):
                 ticket_price = 0
             elif payment_type == "paid" and ticket_price is None:
                 return HttpResponse("You need to specify ticket price")
+
+            if start_date > end_date:
+                context["form"] = form
+                context["ev_name"] = form.cleaned_data.get("name")
+                context["capacity"] = form.cleaned_data.get("capacity")
+                context["description"] = form.cleaned_data.get("description")
+                context["ticket_price"] = form.cleaned_data.get("ticket_price")
+                return render(request, "create_event.html", context)
 
             event = Event(
                 name=name,
@@ -409,17 +458,16 @@ def create_event(request):
         else:
             print("Form is not valid")
             print(form.errors)
+
+            context["form"] = form
+            context["ev_name"] = form.cleaned_data.get("name")
+            context["capacity"] = form.cleaned_data.get("capacity")
+            context["description"] = form.cleaned_data.get("description")
+            context["ticket_price"] = form.cleaned_data.get("ticket_price")
+            return render(request, "create_event.html", context)
     else:
         form = EventForm()
-
-    event_places = EventPlace.objects.all()
-    categires = Category.objects.all()
-    context = {
-        "title": "Create event page",
-        "event_places": event_places,
-        "form": form,
-        "categories": categires
-    }
+        context["form"] = form
 
     return render(request, "create_event.html", context)
 
@@ -551,9 +599,51 @@ def login_view(request):
 
     return render(request, "login_temps/login.html", {"title": "Login page", "form": form})
 
+# allows to edit info about user by himself
+@login_required
+def settings_view(request):
+    context = {"title": "Settings page", "email": request.user.email, 
+               "phone_number": request.user.phone_number}
+
+    if request.method == 'POST':
+        form = SettingsForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get("email")
+            phone_number = form.cleaned_data.get("phone_number")
+            old_password = form.cleaned_data.get("old_password")
+            password = form.cleaned_data.get("password")
+            flag = False
+            user = request.user
+            if user.email != email:
+                user.email = email
+                flag = True
+            if user.phone_number != phone_number and user.phone_number != str(phone_number):
+                user.phone_number = phone_number
+                flag = True
+            if old_password and password:
+                user = authenticate(request, username=user.username, password=old_password)
+                if user is not None:
+                    user.set_password(password)
+                    login(request, user)
+                    flag = True
+            if flag:
+                user.save()
+                messages.success(request, f"Your data was successfully changed.")
+                return redirect("home_page")
+        else:
+            print(form.errors)
+            context["form"] = form
+            return render(request, "login_temps/settings.html", context)
+    else:
+        form = SettingsForm()
+        context["form"] = form
+
+    return render(request, "login_temps/settings.html", context)
 
 # allows to create a new account for a new user from a corresponding page
 def register_view(request):
+    context = {"title": "Register page"}
+
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
@@ -564,10 +654,11 @@ def register_view(request):
             phone_number = form.cleaned_data.get("phone_number")
             password = form.cleaned_data.get("password")
 
+            if len(RegisteredUser.objects.filter(username=username)) != 0:
+                return HttpResponse("User with this name already exists.")
+
             print(username, name, surname, email, phone_number, password)
 
-            if RegisteredUser.objects.filter(username=username).exists():
-                return HttpResponse("User with this name already exists.")
             if email:
                 RegisteredUser.create_user(username, name, surname, email, phone_number, password=password)
                 user = authenticate(request, username=username, password=password)
@@ -579,10 +670,19 @@ def register_view(request):
                     return HttpResponse("There are some problems with registration. Try again later")
             else:
                 return HttpResponse("Invalid email")
+        else:
+            print(form.errors)
+            context["form"] = form
+            context["user_n"] = form.cleaned_data.get("username")
+            context["email"] = form.cleaned_data.get("email")
+            context["name"] = form.cleaned_data.get("name")
+            context["surname"] = form.cleaned_data.get("surname")
+            context["phone_num"] = form.cleaned_data.get("phone_number")
+            return render(request, "login_temps/register.html", context)
     else:
         form = RegisterForm()
-
-    return render(request, "login_temps/register.html", {"title": "Register page", "form": form})
+    context["form"] = form
+    return render(request, "login_temps/register.html", context)
 
 
 # runs when there is an unknown page
