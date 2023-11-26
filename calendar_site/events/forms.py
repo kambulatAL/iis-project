@@ -3,13 +3,17 @@ from django.core.validators import MaxValueValidator, MinValueValidator, RegexVa
 from datetime import date
 from datetime import datetime
 from events.models import EventPlace, Category
+import pytz
+
+eastern = pytz.timezone('Europe/Prague')
 
 
 # form for user to enter as a registered user
 class LoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
-    
+
+
 # form for user to change his info
 class SettingsForm(forms.Form):
     email = forms.EmailField(max_length=255, required=False)
@@ -17,10 +21,11 @@ class SettingsForm(forms.Form):
     old_password = forms.CharField(widget=forms.PasswordInput, required=False)
     password = forms.CharField(widget=forms.PasswordInput, required=False)
 
+
 # form for registration
 class RegisterForm(forms.Form):
     username = forms.CharField(max_length=100, validators=[
-        RegexValidator(regex=r'^[A-Za-z][A-Za-z0-9]+$',
+        RegexValidator(regex=r'^[A-Za-z][A-Za-z0-9_]+$',
                        message='Only letters and numbers are allowed for the "username" field.')])
     name = forms.CharField(validators=[RegexValidator(regex=r'^[A-Za-zÁáČčĎďÉéĚěÍíŇňÓóŘřŠšŤťÚúŮůÝýŽž\s]+$',
                                                       message='Only letters are allowed for the "name" field.')])
@@ -65,10 +70,13 @@ class EventForm(forms.Form):
     name = forms.CharField(validators=[
         RegexValidator(regex=r'^[A-Za-zÁáČčĎďÉéĚěÍíŇňÓóŘřŠšŤťÚúŮůÝýŽž][A-Za-z0-9ÁáČčĎďÉéĚěÍíŇňÓóŘřŠšŤťÚúŮůÝýŽž\s]+$',
                        message='Only letters and numbers are allowed for the "event name" field.')])
-    start_date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}), initial=date.today(),
-                                 validators=[MinValueValidator(limit_value=date.today())])
-    end_date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}), initial=date.today(),
-                               validators=[MinValueValidator(limit_value=date.today())])
+
+    start_date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}),
+                                 initial=datetime.now(eastern).date(),
+                                 validators=[MinValueValidator(limit_value=datetime.now(eastern).date())])
+    end_date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}),
+                               initial=datetime.now(eastern).date(),
+                               validators=[MinValueValidator(limit_value=datetime.now(eastern).date())])
     start_time = forms.TimeField(input_formats=['%H:%M'])
     end_time = forms.TimeField(input_formats=['%H:%M'])
     capacity = forms.IntegerField(min_value=1)
