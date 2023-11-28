@@ -97,9 +97,13 @@ class EventForm(forms.Form):
         widget=forms.CheckboxSelectMultiple()
     )
 
-    # form for writing comment and estimation for an event
+    def __init__(self, *args, **kwargs):
+        super(EventForm, self).__init__(*args, **kwargs)
+        self.fields['start_date'].initial = datetime.now(eastern).date()
+        self.fields['end_date'].initial = datetime.now(eastern).date()
 
 
+# form for writing comment and estimation for an event
 class CommentForm(forms.Form):
     content = forms.CharField(widget=forms.Textarea)
     estimation = forms.ChoiceField(choices=[
