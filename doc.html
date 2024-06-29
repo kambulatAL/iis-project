@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Projekt IIS</title>
+    <style type="text/css">
+    	table { border-collapse: collapse; }
+    	td, th { border: 1px solid black; padding: 0.3em 0.5em; text-align: left; }
+    	dt { font-weight: bold; margin-top: 0.5em; }
+    </style>
+</head>
+<body>
+
+<!-- Zkontrolujte prosím nastavení kódování v hlavičce dokumentu 
+     podle použitého editoru -->
+
+<h1>Akce a události</h1> <!-- Nahradte názvem svého zadání -->
+
+<dl>
+	<dt>Autoři</dt>
+	<dd>Kambulat Alakaev <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
+	    <a href="mailto:xalaka00@stud.fit.vutbr.cz">xalaka00@stud.fit.vutbr.cz</a> -
+		databáze, HTML šablony, backend
+	</dd>
+	<dd>Dias Assatulla <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
+	    <a href="mailto:xassat00@stud.fit.vutbr.cz">xassat00@stud.fit.vutbr.cz</a> - 
+		HTML šablony, backend, hosting
+	</dd>
+  <dd>Kateryna Zdebska <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
+	    <a href="mailto:xzdebs00@stud.fit.vutbr.cz">xzdebs00@stud.fit.vutbr.cz</a> - 
+		design, backend, testování
+	</dd>
+	<dt>URL aplikace</dt>
+	<dd><a href="https://xassat00iis.codes">https://xassat00iis.codes</a></dd>
+
+</dl>
+
+<h2>Uživatelé systému pro testování</h2>
+<table>
+<tr><th>Login</th><th>Heslo</th><th>Role</th></tr>
+<tr><td>xblanco00</td><td>user_pass</td><td>Uživatel</td></tr>
+<tr><td>user_login</td><td>user_pass</td><td>Uživatel</td></tr>
+<tr><td>xassat00</td><td>user_pass</td><td>Administrátor</td></tr>
+<tr><td>xapada00</td><td>user_pass</td><td>Moderátor</td></tr>
+<tr><td>moder_login</td><td>user_pass</td><td>Moderátor</td></tr>
+</table>
+
+
+<h3>Video</h3>
+<a href="https://youtu.be/t76pSxIth_A">https://youtu.be/t76pSxIth_A</a> <br>
+Ve videu není uvedeno, že pokud chcete po použití filtrů na zobrazení událostí znovu zobrazit všechny události, musíte kliknout na tlačítko "CALENDAR" v levém horním rohu a filtr se resetuje.
+
+<h2>Implementace</h2>
+<p>Projekt je napsán pomocí frameworku Django, který využívá MVT(Model-View-Templates). Projekt je rozdělen do několika částí podle MVT. Model představuje sebou databázi celé aplikace a je realizován v souboru "models.py". Templates jsou stránky s kódem HTML, do kterých se vkládají data z modelu na základě akcí prováděných uživatelem. Pro zajíštění možnosti dosazování dat do HTML šablon využiváme jazyk Jinja2. Šablony jsou umistěny ve složce "Templates". View představují funkce, které se provádějí na základě akcí uživatele a naplňují šablony příslušnými daty. Hlavními částmi projektu jsou soubory "models.py", "views.py", "forms.py" a "urls.py", kde se provádí směrování url. Soubor views.py je to pravé místo, kde se odehrává většina logiky IS. Funkce v tomto souboru lze rozdělit na 3 skupiny: <br>
+1. Funkce určené pro administrátory a moderátory, pomocí kterým lze spravovat systém; <br>
+2. Funcke určené pro registrovaného uživatele; <br>
+3. Funkce přístupné i pro neregistrovaného uživatele. <br>
+ </p>
+Všechny views jsme napsali sami a práva na použití funkcí z výše uvedených skupin kontrolují naši vlastní dekoratory.
+
+
+
+<h3>Databáze</h3>
+
+<img src="events_worker.png" width="500" height="600">
+
+<h2>Instalace</h2>
+
+
+<h3>Instalace pomocí Docker</h3>
+
+Prerekvizity:
+<ul>
+	<li>Docker</li>
+</ul>
+
+Stručný popis: 
+<ul>
+	<li>Přesun do složky s manage.py - cd calendar_site/</li>
+	<li>Vytvoření docker build/kontejneru - docker-compose build</li>
+	<li>Spuštění kontejneru - docker-compose up</li>
+	<li>Stránka bude dostupná na adrese "localhost:8000"</li>
+</ul>
+Jsme používali Docker jenom pro učely testování IS. Program na serveru běží bez Docker.
+
+
+<h3>Instalace bez Docker</h3>
+
+Prerekvizity:
+<ul>
+	<li>Python 3.10+</li>
+	<li>Django 4.1+</li>
+	<li>pytz 2023.3.post1</li>
+</ul>
+
+Stručný popis: 
+<ul>
+<li>Ve složce s projektem(calendar_site) do terminalu napsat: python3 -m venv env</li>
+<li>Pro aktivaci virtuálního okolí(linux/Mac OS): source env/bin/activate</li>
+<li>Pro stažení potřebných knihoven: pip install -r requirements.py</li>
+<li>nastavení databáze a vytvoření tabulek - python3 manage.py migrate</li>
+<li>naplnění vstupními daty(vytvoření uživatelů, atd.) - python3 manage.py shell < events/create_data.py</li>
+<li>Spuštění serveru - python3 manage.py runserver</li>
+<li>Stránka je nyní dostupná na adrese "127.0.0.1:8000"</li>
+</ul>
+Server pracuje na OS Debian, funguje pomocí Google Clouds s nginx + gunicorn.
+
+
+</body>
+</html>
+
