@@ -47,10 +47,6 @@
 </table>
 
 
-<h3>Video</h3>
-<a href="https://youtu.be/t76pSxIth_A">https://youtu.be/t76pSxIth_A</a> <br>
-Ve videu není uvedeno, že pokud chcete po použití filtrů na zobrazení událostí znovu zobrazit všechny události, musíte kliknout na tlačítko "CALENDAR" v levém horním rohu a filtr se resetuje.
-
 <h2>Implementace</h2>
 <p>Projekt je napsán pomocí frameworku Django, který využívá MVT(Model-View-Templates). Projekt je rozdělen do několika částí podle MVT. Model představuje sebou databázi celé aplikace a je realizován v souboru "models.py". Templates jsou stránky s kódem HTML, do kterých se vkládají data z modelu na základě akcí prováděných uživatelem. Pro zajíštění možnosti dosazování dat do HTML šablon využiváme jazyk Jinja2. Šablony jsou umistěny ve složce "Templates". View představují funkce, které se provádějí na základě akcí uživatele a naplňují šablony příslušnými daty. Hlavními částmi projektu jsou soubory "models.py", "views.py", "forms.py" a "urls.py", kde se provádí směrování url. Soubor views.py je to pravé místo, kde se odehrává většina logiky IS. Funkce v tomto souboru lze rozdělit na 3 skupiny: <br>
 1. Funkce určené pro administrátory a moderátory, pomocí kterým lze spravovat systém; <br>
